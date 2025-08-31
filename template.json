@@ -1,8 +1,6 @@
 {
   "Actor": {
-    "types": [
-      "character"
-    ],
+    "types": ["character"],
     "character": {
       "characteristics": {
         "corps": {
@@ -46,6 +44,21 @@
           "vigueur": { "value": 3, "label": "Vigueur", "characteristic": "endurance" }
         }
       }
+    }
+  },
+  "Item": {
+    "types": ["competenceAcquise", "arme"],
+    "competenceAcquise": {
+      "description": "",
+      "characteristic": "intelligence",
+      "value": 0,
+      "hasSpecialization": false,
+      "specialization": ""
+    },
+    "arme": {
+        "description": "",
+        "damage": "",
+        "range": ""
     }
   }
 }

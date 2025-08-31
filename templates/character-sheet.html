@@ -107,5 +107,20 @@
           </div>
           {{/each}}
         </div>
+		
+		        <!-- NOUVELLE SECTION : Compétences Acquises (gérée par les Items) -->
+        <h3>Compétences Acquises</h3>
+        <ul class="items-list">
+        {{#each actor.items as |item id|}}
+          {{#if (eq item.type "competenceAcquise")}}
+          <li class="item" data-item-id="{{item._id}}">
+            <div class="item-name">
+                <h4>{{item.name}}</h4>
+            </div>
+            <!-- Plus de détails viendront ici plus tard -->
+          </li>
+          {{/if}}
+        {{/each}}
+        </ul>
       </section>
 </form>
