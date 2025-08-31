@@ -108,28 +108,31 @@
           {{/each}}
         </div>
 		
-        <!-- SECTION : Compétences Acquises (gérée par les Items) -->
+        <!-- SECTION : Compétences Acquises -->
         <h3>Compétences Acquises</h3>
-        <div class="items-list skills-list">
+        <ul class="items-list-rich">
         {{#each actor.items as |item id|}}
           {{#if (eq item.type "competenceAcquise")}}
-          <div class="skill-row item" data-item-id="{{item._id}}">
-            <span class="skill-label">
-              {{item.name}} 
-              {{#if item.system.hasSpecialization}}
-                ({{item.system.specialization}})
-              {{/if}}
-              <a class="item-control item-edit" title="Modifier la Compétence"><i class="fas fa-edit"></i></a>
-            </span>
-            <div class="skill-controls">
-              <span>({{item.system.characteristic}})</span>
-              <!-- CORRECTION DÉFINITIVE ICI -->
-              <input type="number" name="items.{{item._id}}.system.value" value="{{item.system.value}}"/>
-              <a class="rollable-item-skill"><i class="fas fa-dice-d20"></i></a>
+          <li class="item" data-item-id="{{item._id}}">
+            <div class="item-image">
+              <img src="{{item.img}}" title="{{item.name}}" width="24" height="24"/>
             </div>
-          </div>
+            <h4 class="item-name" title="{{item.system.description}}">
+                {{item.name}}
+                <!-- CHANGEMENT ICI : On ajoute un champ de saisie si la spé est requise -->
+                {{#if item.system.hasSpecialization}}
+                  (<span class="specialization-input" data-name="items.{{item._id}}.system.specialization" contenteditable="true">{{item.system.specialization}}</span>)
+                {{/if}}
+            </h4>
+            <span class="item-char">({{item.system.characteristic}})</span>
+            <div class="item-controls">
+              <input type="number" name="items.{{item._id}}.system.value" value="{{item.system.value}}"/>
+              <a class="rollable-item-skill" title="Lancer {{item.name}}"><i class="fas fa-dice-d20"></i></a>
+              <a class="item-control item-edit" title="Modifier"><i class="fas fa-edit"></i></a>
+            </div>
+          </li>
           {{/if}}
         {{/each}}
-        </div>
+        </ul>
       </section>
 </form>

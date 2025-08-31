@@ -7,16 +7,19 @@
   </header>
 
   <section class="sheet-body">
-    
     <div class="form-group">
         <label>Caractéristique par défaut</label>
-        <input type="text" name="system.characteristic" value="{{item.system.characteristic}}" />
+        <select name="system.characteristic">
+            {{selectOptions characteristics}}
+        </select>
     </div>
-
     <div class="form-group">
         <label>Nécessite une spécialisation ?</label>
-        <input type="checkbox" name="system.hasSpecialization" {{checked item.system.hasSpecialization}} />
+        <input type="checkbox" name="system.hasSpecialization" {{checked system.hasSpecialization}} />
     </div>
-
+    <div class="form-group editor">
+        <label>Description</label>
+        {{editor system.description target="system.description" button=true owner=owner editable=editable}}
+    </div>
   </section>
 </form>

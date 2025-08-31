@@ -37,33 +37,34 @@ export class FadingSunsActorSheet extends foundry.appv1.sheets.ActorSheet {
    * @param {Event} event   L'événement qui a déclenché la mise à jour.
    * @param {object} formData L'objet contenant les données du formulaire.
    */
-  async _updateObject(event, formData) {
+async _updateObject(event, formData) {
     const actor = this.object;
-    const updates = [];
+    // On transforme le formData en un objet simple pour pouvoir le manipuler.
+    const expandedData = foundry.utils.expandObject(formData);
     
-    // On parcourt les données du formulaire
-    for (const [key, value] of Object.entries(formData)) {
-        // On cherche les clés qui correspondent à des items (ex: items.ITEM_ID.system.value)
-        if (key.startsWith("items.")) {
-            const parts = key.split(".");
-            const itemId = parts[1];
-            const propertyPath = parts.slice(2).join("."); // "system.value"
+    // On gère les spans éditables séparément
+    this.form.querySelectorAll('span[contenteditable="true"][data-name]').forEach(span => {
+        const name = span.dataset.name;
+        const value = span.textContent;
+        foundry.utils.setProperty(expandedData, name, value);
+    });
 
-            // On prépare une mise à jour spécifique pour cet item
-            updates.push({
-                _id: itemId,
-                [propertyPath]: value
-            });
-        }
+    const updates = [];
+    const itemsData = expandedData.items || {};
+
+    for (const [id, data] of Object.entries(itemsData)) {
+        updates.push({ _id: id, ...data });
     }
-    
-    // Si on a des mises à jour d'items, on les exécute
+
     if (updates.length > 0) {
         await actor.updateEmbeddedDocuments("Item", updates);
     }
     
-    // On laisse Foundry gérer le reste des mises à jour (caractéristiques, etc.)
-    return super._updateObject(event, formData);
+    // On s'assure que la clé "items" est retirée pour éviter les erreurs
+    delete expandedData.items;
+
+    // On laisse Foundry gérer le reste des mises à jour
+    return actor.update(expandedData);
   }
   // --- GESTIONNAIRES D'ÉVÉNEMENTS (LES FONCTIONS "_on...") ---
 
@@ -132,47 +133,43 @@ export class FadingSunsActorSheet extends foundry.appv1.sheets.ActorSheet {
    * @param {object} skillData Les données de la compétence (system)
    * @param {string} skillName Le nom de la compétence à afficher
    */
-  _openCharacteristicSelectorDialog(skillData, skillName) {
-    let dialogContent = `<form><div class="form-group"><label>Choisir la Caractéristique :</label><select name="characteristic-key">`;
-    
-    // Boucle pour construire la liste déroulante de toutes les caractéristiques
-    for (const groupKey in this.actor.system.characteristics) {
-      const group = this.actor.system.characteristics[groupKey];
-      if (groupKey === "esprit") {
-        for (const pairKey in group) {
-          const pair = group[pairKey];
-          for (const charKey in pair) {
-            if (charKey === "primary") continue;
-            const characteristic = pair[charKey];
-            dialogContent += `<option value="${charKey}">${characteristic.label}</option>`;
-          }
-        }
-      } else {
-        for (const charKey in group) {
-          const characteristic = group[charKey];
-          dialogContent += `<option value="${charKey}">${characteristic.label}</option>`;
-        }
-      }
-    }
-    dialogContent += `</select></div></form>`;
+    async _openCharacteristicSelectorDialog(skillData, skillName) {
+        const templateData = {
+            choices: [
+                { value: "force", label: "Force" }, { value: "dexterite", label: "Dextérité" },
+                { value: "endurance", label: "Endurance" }, { value: "intelligence", label: "Intelligence" },
+                { value: "perception", label: "Perception" }, { value: "tech", label: "Tech" },
+                { value: "extraverti", label: "Extraverti" }, { value: "introverti", label: "Introverti" },
+                { value: "passion", label: "Passion" }, { value: "calme", label: "Calme" },
+                { value: "foi", label: "Foi" }, { value: "ego", label: "Ego" }
+            ]
+        };
+        templateData.choices.forEach(c => {
+            if (c.value === skillData.characteristic) c.selected = true;
+        });
 
-    new Dialog({
-      title: `Jet de ${skillName}`,
-      content: dialogContent,
-      buttons: {
-        roll: {
-          icon: '<i class="fas fa-dice-d20"></i>',
-          label: "Lancer",
-          callback: (html) => {
-            const selectedCharKey = html.find('[name="characteristic-key"]').val();
-            this._executeRoll(skillData, selectedCharKey, skillName);
-          }
-        },
-        cancel: { icon: '<i class="fas fa-times"></i>', label: "Annuler" }
-      },
-      default: "roll"
-    }).render(true);
-  }
+        const content = await foundry.applications.handlebars.renderTemplate(
+            "systems/adax-fading-suns-2ed/templates/dialogs/select-characteristic-dialog.html", 
+            templateData
+        );
+    
+        new Dialog({
+            title: `Jet de ${skillName}`,
+            content: content,
+            buttons: {
+                roll: {
+                    icon: '<i class="fas fa-dice-d20"></i>',
+                    label: "Lancer",
+                    callback: (html) => {
+                        const selectedCharKey = html.find('[name="characteristic-key"]').val();
+                        this._executeRoll(skillData, selectedCharKey, skillName);
+                    }
+                },
+                cancel: { icon: '<i class="fas fa-times"></i>', label: "Annuler" }
+            },
+            default: "roll"
+        }).render(true);
+    }
 
   /**
    * Exécute le jet de dé et envoie le message au chat. C'est la fonction centrale.

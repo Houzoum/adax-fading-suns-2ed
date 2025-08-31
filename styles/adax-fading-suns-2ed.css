@@ -85,3 +85,62 @@
 .fadingsuns .skill-label {
     text-transform: capitalize; /* Met la première lettre de la carac. associée en majuscule */
 }
+
+/* --- Raffinement de la liste d'items --- */
+.fadingsuns .items-list-rich {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.fadingsuns .items-list-rich .item {
+    display: flex;
+    align-items: center;
+    padding: 3px 0;
+    border-bottom: 1px solid #eee;
+}
+
+.fadingsuns .items-list-rich .item-image {
+    flex: 0 0 24px;
+    margin-right: 8px;
+}
+
+.fadingsuns .items-list-rich .item-name {
+    flex: 1;
+    margin: 0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis; /* Empêche les noms trop longs de déborder */
+}
+
+.fadingsuns .items-list-rich .item-controls {
+    display: flex;
+    align-items: center;
+    flex: 0 0 120px; /* Donne une largeur fixe aux contrôles */
+    justify-content: flex-end;
+}
+
+.fadingsuns .items-list-rich .item-char {
+    margin-left: auto; /* Pousse la caractéristique juste avant les contrôles */
+    margin-right: 10px;
+    font-style: italic;
+    color: #555;
+    text-transform: capitalize;
+}
+.fadingsuns .specialization-input {
+    display: inline-block; /* Permet de définir une largeur minimale */
+    min-width: 80px; /* Garde une taille minimale pour cliquer dessus */
+    margin-left: 5px;
+    border: none;
+    border-bottom: 1px dotted #666;
+    background: transparent;
+    text-align: center;
+    cursor: text; /* Indique que c'est une zone de texte */
+}
+
+/* Simule le placeholder pour les champs vides */
+.fadingsuns .specialization-input:empty::before {
+    content: "Spécialité";
+    color: #888;
+    font-style: italic;
+}
