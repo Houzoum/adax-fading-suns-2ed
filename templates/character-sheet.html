@@ -1,0 +1,111 @@
+<form class="{{cssClass}}" autocomplete="off">
+  <header class="sheet-header">
+    <h1>Fiche de Personnage Fading Suns</h1>
+  </header>
+
+      <section class="sheet-body">
+        <h2>Caractéristiques</h2>
+
+        <!-- Groupe CORPS -->
+        <h3>Corps</h3>
+        <div class="characteristic-row">
+          <span>{{actor.system.characteristics.corps.force.label}}:</span>
+          <div class="characteristic-controls">
+            <input type="number" name="system.characteristics.corps.force.value" value="{{actor.system.characteristics.corps.force.value}}"/>
+            <a class="rollable" data-roll-type="characteristic" data-characteristic-key="force"><i class="fas fa-dice-d20"></i></a>
+          </div>
+        </div>
+        <div class="characteristic-row">
+          <span>{{actor.system.characteristics.corps.dexterite.label}}:</span>
+          <div class="characteristic-controls">
+            <input type="number" name="system.characteristics.corps.dexterite.value" value="{{actor.system.characteristics.corps.dexterite.value}}"/>
+            <a class="rollable" data-roll-type="characteristic" data-characteristic-key="dexterite"><i class="fas fa-dice-d20"></i></a>
+          </div>
+        </div>
+        <div class="characteristic-row">
+          <span>{{actor.system.characteristics.corps.endurance.label}}:</span>
+          <div class="characteristic-controls">
+            <input type="number" name="system.characteristics.corps.endurance.value" value="{{actor.system.characteristics.corps.endurance.value}}"/>
+            <a class="rollable" data-roll-type="characteristic" data-characteristic-key="endurance"><i class="fas fa-dice-d20"></i></a>
+          </div>
+        </div>
+
+        <!-- Groupe INTELLECT -->
+        <h3>Intellect</h3>
+        <div class="characteristic-row">
+          <span>{{actor.system.characteristics.intellect.intelligence.label}}:</span>
+          <div class="characteristic-controls">
+            <input type="number" name="system.characteristics.intellect.intelligence.value" value="{{actor.system.characteristics.intellect.intelligence.value}}"/>
+            <a class="rollable" data-roll-type="characteristic" data-characteristic-key="intelligence"><i class="fas fa-dice-d20"></i></a>
+          </div>
+        </div>
+        <div class="characteristic-row">
+          <span>{{actor.system.characteristics.intellect.perception.label}}:</span>
+          <div class="characteristic-controls">
+            <input type="number" name="system.characteristics.intellect.perception.value" value="{{actor.system.characteristics.intellect.perception.value}}"/>
+            <a class="rollable" data-roll-type="characteristic" data-characteristic-key="perception"><i class="fas fa-dice-d20"></i></a>
+          </div>
+        </div>
+        <div class="characteristic-row">
+          <span>{{actor.system.characteristics.intellect.tech.label}}:</span>
+          <div class="characteristic-controls">
+            <input type="number" name="system.characteristics.intellect.tech.value" value="{{actor.system.characteristics.intellect.tech.value}}"/>
+            <a class="rollable" data-roll-type="characteristic" data-characteristic-key="tech"><i class="fas fa-dice-d20"></i></a>
+          </div>
+        </div>
+
+        <!-- Groupe ESPRIT -->
+        <h3>Esprit</h3>
+        <div class="spirit-pair">
+          <div class="spirit-trait">
+            <span class="{{#if (eq actor.system.characteristics.esprit.pair1.primary 'extraverti')}}primary-trait{{/if}}">{{actor.system.characteristics.esprit.pair1.extraverti.label}}</span>
+            <input type="number" name="system.characteristics.esprit.pair1.extraverti.value" value="{{actor.system.characteristics.esprit.pair1.extraverti.value}}"/>
+            <a class="rollable" data-roll-type="characteristic" data-characteristic-key="extraverti" data-pair-key="pair1"><i class="fas fa-dice-d20"></i></a>
+          </div>
+          <span class="spirit-separator">/</span>
+          <div class="spirit-trait">
+            <span class="{{#if (eq actor.system.characteristics.esprit.pair1.primary 'introverti')}}primary-trait{{/if}}">{{actor.system.characteristics.esprit.pair1.introverti.label}}</span>
+            <input type="number" name="system.characteristics.esprit.pair1.introverti.value" value="{{actor.system.characteristics.esprit.pair1.introverti.value}}"/>
+            <a class="rollable" data-roll-type="characteristic" data-characteristic-key="introverti" data-pair-key="pair1"><i class="fas fa-dice-d20"></i></a>
+          </div>
+        </div>
+        <div class="spirit-pair">
+          <div class="spirit-trait">
+            <span class="{{#if (eq actor.system.characteristics.esprit.pair2.primary 'passion')}}primary-trait{{/if}}">{{actor.system.characteristics.esprit.pair2.passion.label}}</span>
+            <input type="number" name="system.characteristics.esprit.pair2.passion.value" value="{{actor.system.characteristics.esprit.pair2.passion.value}}"/>
+            <a class="rollable" data-roll-type="characteristic" data-characteristic-key="passion" data-pair-key="pair2"><i class="fas fa-dice-d20"></i></a>
+          </div>
+          <span class="spirit-separator">/</span>
+          <div class="spirit-trait">
+            <span class="{{#if (eq actor.system.characteristics.esprit.pair2.primary 'calme')}}primary-trait{{/if}}">{{actor.system.characteristics.esprit.pair2.calme.label}}</span>
+            <input type="number" name="system.characteristics.esprit.pair2.calme.value" value="{{actor.system.characteristics.esprit.pair2.calme.value}}"/>
+            <a class="rollable" data-roll-type="characteristic" data-characteristic-key="calme" data-pair-key="pair2"><i class="fas fa-dice-d20"></i></a>
+          </div>
+        </div>
+        <div class="spirit-pair">
+          <div class="spirit-trait">
+            <span class="{{#if (eq actor.system.characteristics.esprit.pair3.primary 'foi')}}primary-trait{{/if}}">{{actor.system.characteristics.esprit.pair3.foi.label}}</span>
+            <input type="number" name="system.characteristics.esprit.pair3.foi.value" value="{{actor.system.characteristics.esprit.pair3.foi.value}}"/>
+            <a class="rollable" data-roll-type="characteristic" data-characteristic-key="foi" data-pair-key="pair3"><i class="fas fa-dice-d20"></i></a>
+          </div>
+          <span class="spirit-separator">/</span>
+          <div class="spirit-trait">
+            <span class="{{#if (eq actor.system.characteristics.esprit.pair3.primary 'ego')}}primary-trait{{/if}}">{{actor.system.characteristics.esprit.pair3.ego.label}}</span>
+            <input type="number" name="system.characteristics.esprit.pair3.ego.value" value="{{actor.system.characteristics.esprit.pair3.ego.value}}"/>
+            <a class="rollable" data-roll-type="characteristic" data-characteristic-key="ego" data-pair-key="pair3"><i class="fas fa-dice-d20"></i></a>
+          </div>
+        </div>
+		        <h3>Compétences Innées</h3>
+        <div class="skills-list">
+          {{#each actor.system.skills.innees as |skill key|}}
+          <div class="skill-row">
+            <span class="skill-label">{{skill.label}} ({{skill.characteristic}})</span>
+            <div class="skill-controls">
+              <input type="number" name="system.skills.innees.{{key}}.value" value="{{skill.value}}"/>
+              <a class="rollable-skill" data-skill-key="{{key}}"><i class="fas fa-dice-d20"></i></a>
+            </div>
+          </div>
+          {{/each}}
+        </div>
+      </section>
+</form>

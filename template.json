@@ -1,0 +1,51 @@
+{
+  "Actor": {
+    "types": [
+      "character"
+    ],
+    "character": {
+      "characteristics": {
+        "corps": {
+          "force": { "value": 3, "label": "Force" },
+          "dexterite": { "value": 3, "label": "Dextérité" },
+          "endurance": { "value": 3, "label": "Endurance" }
+        },
+        "intellect": {
+          "intelligence": { "value": 3, "label": "Intelligence" },
+          "perception": { "value": 3, "label": "Perception" },
+          "tech": { "value": 3, "label": "Tech" }
+        },
+        "esprit": {
+          "pair1": {
+            "primary": "extraverti",
+            "extraverti": { "value": 3, "label": "Extraverti" },
+            "introverti": { "value": 1, "label": "Introverti" }
+          },
+          "pair2": {
+            "primary": "passion",
+            "passion": { "value": 3, "label": "Passion" },
+            "calme": { "value": 1, "label": "Calme" }
+          },
+          "pair3": {
+            "primary": "foi",
+            "foi": { "value": 3, "label": "Foi" },
+            "ego": { "value": 1, "label": "Ego" }
+          }
+        }
+      },
+      "skills": {
+        "innees": {
+          "charme": { "value": 3, "label": "Charme", "characteristic": "extraverti" },
+          "combatMainsNues": { "value": 3, "label": "Combat mains nues", "characteristic": "dexterite" },
+          "discretion": { "value": 3, "label": "Discrétion", "characteristic": "dexterite" },
+          "esquive": { "value": 3, "label": "Esquive", "characteristic": "dexterite" },
+          "intimidation": { "value": 3, "label": "Intimidation", "characteristic": "force" },
+          "melee": { "value": 3, "label": "Mêlée", "characteristic": "dexterite" },
+          "observation": { "value": 3, "label": "Observation", "characteristic": "perception" },
+          "tir": { "value": 3, "label": "Tir", "characteristic": "dexterite" },
+          "vigueur": { "value": 3, "label": "Vigueur", "characteristic": "endurance" }
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,87 @@
+/* Style général pour la feuille de personnage de notre système */
+.fadingsuns.sheet.actor {
+    /* On pourra ajouter ici des styles généraux plus tard */
+}
+
+/* Règle pour la mise en évidence du trait primaire d'Esprit */
+.fadingsuns .primary-trait {
+    text-decoration: underline;
+    font-weight: bold;
+}
+
+/* --- SECTION CARACTÉRISTIQUES --- */
+
+/* Conteneur pour une ligne de caractéristique (ex: Force) */
+.fadingsuns .characteristic-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 2px 0;
+    margin-bottom: 5px;
+}
+
+/* Groupe les contrôles (input + dé) à droite */
+.fadingsuns .characteristic-controls {
+    display: flex;
+    align-items: center;
+}
+
+/* Conteneur pour une paire d'Esprit (ex: Extraverti / Introverti) */
+.fadingsuns .spirit-pair {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border: 1px solid #ccc;
+    padding: 5px;
+    margin-bottom: 5px;
+}
+
+/* Conteneur pour un seul trait d'Esprit (label, input, dé) */
+.fadingsuns .spirit-trait {
+    display: flex;
+    flex-direction: column; /* Aligne les éléments verticalement */
+    align-items: center; /* Centre les éléments horizontalement */
+    width: 45%; /* Donne une largeur fixe pour un meilleur alignement */
+}
+
+/* Style pour le séparateur "/" */
+.fadingsuns .spirit-separator {
+    font-size: 1.5em;
+    font-weight: bold;
+}
+
+/* Style commun pour les inputs et l'icône de dé */
+.fadingsuns input[type="number"] {
+    width: 50px; /* Donne une largeur fixe aux inputs */
+    text-align: center;
+}
+
+.fadingsuns .rollable {
+    margin-left: 10px;
+}
+
+/* --- SECTION COMPÉTENCES --- */
+
+.fadingsuns .skills-list {
+    display: grid; /* On utilise une grille pour un alignement sur plusieurs colonnes */
+    grid-template-columns: repeat(2, 1fr); /* Crée 2 colonnes de largeur égale */
+    gap: 10px; /* Espace entre les colonnes et les rangées */
+    margin-top: 10px;
+}
+
+.fadingsuns .skill-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid #eee;
+    padding-bottom: 5px;
+}
+
+.fadingsuns .skill-controls {
+    display: flex;
+    align-items: center;
+}
+
+.fadingsuns .skill-label {
+    text-transform: capitalize; /* Met la première lettre de la carac. associée en majuscule */
+}

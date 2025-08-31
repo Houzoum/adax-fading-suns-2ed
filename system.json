@@ -1,0 +1,24 @@
+{
+  "id": "adax-fading-suns-2ed",
+  "title": "Adax : Fading Suns 2ed",
+  "description": "Un système de jeu pour Fading Suns 2ème édition, développé pour Foundry VTT.",
+  "version": "0.1.0",
+  "authors": [
+    {
+      "name": "Gemini & Adax"
+    }
+  ],
+  "compatibility": {
+    "minimum": "11",
+    "verified": "11"
+  },
+  "esmodules": [
+    "scripts/adax-fading-suns-2ed.js"
+  ],
+  "styles": [
+    "styles/adax-fading-suns-2ed.css"
+  ],
+  "url": "",
+  "manifest": "",
+  "download": ""
+}
