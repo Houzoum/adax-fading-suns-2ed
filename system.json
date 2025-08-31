@@ -18,6 +18,14 @@
   "styles": [
     "styles/adax-fading-suns-2ed.css"
   ],
+ "packs": [
+      {
+        "name": "competences-acquises",
+        "label": "Compétences Acquises",
+        "path": "packs/competences-acquises",
+        "type": "Item"
+      }
+    ], 
   "url": "",
   "manifest": "",
   "download": ""
