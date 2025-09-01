@@ -1,146 +1,174 @@
-<form class="{{cssClass}}" autocomplete="off">
+<form class="{{cssClass}}" autocomplete="off" style="--specialization-placeholder: '{{localize 'ADAX-FS2.sheet.items.specialization'}}';">
   <header class="sheet-header">
-    <h1>Fiche de Personnage Fading Suns</h1>
+    <h1>{{localize "ADAX-FS2.sheet.title"}}</h1>
   </header>
 
-      <section class="sheet-body">
-        <h2>Caractéristiques</h2>
+  <section class="sheet-body">
+    <h2>{{localize "ADAX-FS2.sheet.characteristics"}}</h2>
 
-        <!-- Groupe CORPS -->
-        <h3>Corps</h3>
-        <div class="characteristic-row">
-          <span>{{actor.system.characteristics.corps.force.label}}:</span>
-          <div class="characteristic-controls">
-            <input type="number" name="system.characteristics.corps.force.value" value="{{actor.system.characteristics.corps.force.value}}"/>
-            <a class="rollable" data-roll-type="characteristic" data-characteristic-key="force"><i class="fas fa-dice-d20"></i></a>
-          </div>
-        </div>
-        <div class="characteristic-row">
-          <span>{{actor.system.characteristics.corps.dexterite.label}}:</span>
-          <div class="characteristic-controls">
-            <input type="number" name="system.characteristics.corps.dexterite.value" value="{{actor.system.characteristics.corps.dexterite.value}}"/>
-            <a class="rollable" data-roll-type="characteristic" data-characteristic-key="dexterite"><i class="fas fa-dice-d20"></i></a>
-          </div>
-        </div>
-        <div class="characteristic-row">
-          <span>{{actor.system.characteristics.corps.endurance.label}}:</span>
-          <div class="characteristic-controls">
-            <input type="number" name="system.characteristics.corps.endurance.value" value="{{actor.system.characteristics.corps.endurance.value}}"/>
-            <a class="rollable" data-roll-type="characteristic" data-characteristic-key="endurance"><i class="fas fa-dice-d20"></i></a>
-          </div>
+    <div class="characteristics-container">
+
+        <!-- Colonne CORPS -->
+        <div class="char-column">
+            <h3>{{localize "ADAX-FS2.characteristics.group.corps"}}</h3>
+            <div class="characteristic-row">
+                <span>{{localize actor.system.characteristics.corps.force.label}}</span>
+                <input type="number" name="system.characteristics.corps.force.value" value="{{actor.system.characteristics.corps.force.value}}"/>
+            </div>
+            <div class="characteristic-row">
+                <span>{{localize actor.system.characteristics.corps.dexterite.label}}</span>
+                <input type="number" name="system.characteristics.corps.dexterite.value" value="{{actor.system.characteristics.corps.dexterite.value}}"/>
+            </div>
+            <div class="characteristic-row">
+                <span>{{localize actor.system.characteristics.corps.endurance.label}}</span>
+                <input type="number" name="system.characteristics.corps.endurance.value" value="{{actor.system.characteristics.corps.endurance.value}}"/>
+            </div>
         </div>
 
-        <!-- Groupe INTELLECT -->
-        <h3>Intellect</h3>
-        <div class="characteristic-row">
-          <span>{{actor.system.characteristics.intellect.intelligence.label}}:</span>
-          <div class="characteristic-controls">
-            <input type="number" name="system.characteristics.intellect.intelligence.value" value="{{actor.system.characteristics.intellect.intelligence.value}}"/>
-            <a class="rollable" data-roll-type="characteristic" data-characteristic-key="intelligence"><i class="fas fa-dice-d20"></i></a>
-          </div>
-        </div>
-        <div class="characteristic-row">
-          <span>{{actor.system.characteristics.intellect.perception.label}}:</span>
-          <div class="characteristic-controls">
-            <input type="number" name="system.characteristics.intellect.perception.value" value="{{actor.system.characteristics.intellect.perception.value}}"/>
-            <a class="rollable" data-roll-type="characteristic" data-characteristic-key="perception"><i class="fas fa-dice-d20"></i></a>
-          </div>
-        </div>
-        <div class="characteristic-row">
-          <span>{{actor.system.characteristics.intellect.tech.label}}:</span>
-          <div class="characteristic-controls">
-            <input type="number" name="system.characteristics.intellect.tech.value" value="{{actor.system.characteristics.intellect.tech.value}}"/>
-            <a class="rollable" data-roll-type="characteristic" data-characteristic-key="tech"><i class="fas fa-dice-d20"></i></a>
-          </div>
+        <!-- Colonne INTELLECT -->
+        <div class="char-column">
+            <h3>{{localize "ADAX-FS2.characteristics.group.intellect"}}</h3>
+            <div class="characteristic-row">
+                <span>{{localize actor.system.characteristics.intellect.intelligence.label}}</span>
+                <input type="number" name="system.characteristics.intellect.intelligence.value" value="{{actor.system.characteristics.intellect.intelligence.value}}"/>
+            </div>
+            <div class="characteristic-row">
+                <span>{{localize actor.system.characteristics.intellect.perception.label}}</span>
+                <input type="number" name="system.characteristics.intellect.perception.value" value="{{actor.system.characteristics.intellect.perception.value}}"/>
+            </div>
+            <div class="characteristic-row">
+                <span>{{localize actor.system.characteristics.intellect.tech.label}}</span>
+                <input type="number" name="system.characteristics.intellect.tech.value" value="{{actor.system.characteristics.intellect.tech.value}}"/>
+            </div>
         </div>
 
-        <!-- Groupe ESPRIT -->
-        <h3>Esprit</h3>
-        <div class="spirit-pair">
-          <div class="spirit-trait">
-            <span class="{{#if (eq actor.system.characteristics.esprit.pair1.primary 'extraverti')}}primary-trait{{/if}}">{{actor.system.characteristics.esprit.pair1.extraverti.label}}</span>
-            <input type="number" name="system.characteristics.esprit.pair1.extraverti.value" value="{{actor.system.characteristics.esprit.pair1.extraverti.value}}"/>
-            <a class="rollable" data-roll-type="characteristic" data-characteristic-key="extraverti" data-pair-key="pair1"><i class="fas fa-dice-d20"></i></a>
-          </div>
-          <span class="spirit-separator">/</span>
-          <div class="spirit-trait">
-            <span class="{{#if (eq actor.system.characteristics.esprit.pair1.primary 'introverti')}}primary-trait{{/if}}">{{actor.system.characteristics.esprit.pair1.introverti.label}}</span>
-            <input type="number" name="system.characteristics.esprit.pair1.introverti.value" value="{{actor.system.characteristics.esprit.pair1.introverti.value}}"/>
-            <a class="rollable" data-roll-type="characteristic" data-characteristic-key="introverti" data-pair-key="pair1"><i class="fas fa-dice-d20"></i></a>
-          </div>
+        <!-- Colonne ESPRIT -->
+        <div class="char-column spirit-column">
+            <h3>{{localize "ADAX-FS2.characteristics.group.esprit"}}</h3>
+            <div class="spirit-pair">
+                <div class="spirit-trait-compact">
+                    <span class="{{#if (eq actor.system.characteristics.esprit.pair1.primary 'extraverti')}}primary-trait{{/if}}">{{localize actor.system.characteristics.esprit.pair1.extraverti.label}}</span>
+                    <input type="number" name="system.characteristics.esprit.pair1.extraverti.value" value="{{actor.system.characteristics.esprit.pair1.extraverti.value}}"/>
+                </div>
+                <span class="spirit-separator">/</span>
+                <div class="spirit-trait-compact">
+                    <span class="{{#if (eq actor.system.characteristics.esprit.pair1.primary 'introverti')}}primary-trait{{/if}}">{{localize actor.system.characteristics.esprit.pair1.introverti.label}}</span>
+                    <input type="number" name="system.characteristics.esprit.pair1.introverti.value" value="{{actor.system.characteristics.esprit.pair1.introverti.value}}"/>
+                </div>
+            </div>
+            <div class="spirit-pair">
+                <div class="spirit-trait-compact">
+                    <span class="{{#if (eq actor.system.characteristics.esprit.pair2.primary 'passion')}}primary-trait{{/if}}">{{localize actor.system.characteristics.esprit.pair2.passion.label}}</span>
+                    <input type="number" name="system.characteristics.esprit.pair2.passion.value" value="{{actor.system.characteristics.esprit.pair2.passion.value}}"/>
+                </div>
+                <span class="spirit-separator">/</span>
+                <div class="spirit-trait-compact">
+                    <span class="{{#if (eq actor.system.characteristics.esprit.pair2.primary 'calme')}}primary-trait{{/if}}">{{localize actor.system.characteristics.esprit.pair2.calme.label}}</span>
+                    <input type="number" name="system.characteristics.esprit.pair2.calme.value" value="{{actor.system.characteristics.esprit.pair2.calme.value}}"/>
+                </div>
+            </div>
+            <div class="spirit-pair">
+                <div class="spirit-trait-compact">
+                    <span class="{{#if (eq actor.system.characteristics.esprit.pair3.primary 'foi')}}primary-trait{{/if}}">{{localize actor.system.characteristics.esprit.pair3.foi.label}}</span>
+                    <input type="number" name="system.characteristics.esprit.pair3.foi.value" value="{{actor.system.characteristics.esprit.pair3.foi.value}}"/>
+                </div>
+                <span class="spirit-separator">/</span>
+                <div class="spirit-trait-compact">
+                    <span class="{{#if (eq actor.system.characteristics.esprit.pair3.primary 'ego')}}primary-trait{{/if}}">{{localize actor.system.characteristics.esprit.pair3.ego.label}}</span>
+                    <input type="number" name="system.characteristics.esprit.pair3.ego.value" value="{{actor.system.characteristics.esprit.pair3.ego.value}}"/>
+                </div>
+            </div>
         </div>
-        <div class="spirit-pair">
-          <div class="spirit-trait">
-            <span class="{{#if (eq actor.system.characteristics.esprit.pair2.primary 'passion')}}primary-trait{{/if}}">{{actor.system.characteristics.esprit.pair2.passion.label}}</span>
-            <input type="number" name="system.characteristics.esprit.pair2.passion.value" value="{{actor.system.characteristics.esprit.pair2.passion.value}}"/>
-            <a class="rollable" data-roll-type="characteristic" data-characteristic-key="passion" data-pair-key="pair2"><i class="fas fa-dice-d20"></i></a>
-          </div>
-          <span class="spirit-separator">/</span>
-          <div class="spirit-trait">
-            <span class="{{#if (eq actor.system.characteristics.esprit.pair2.primary 'calme')}}primary-trait{{/if}}">{{actor.system.characteristics.esprit.pair2.calme.label}}</span>
-            <input type="number" name="system.characteristics.esprit.pair2.calme.value" value="{{actor.system.characteristics.esprit.pair2.calme.value}}"/>
-            <a class="rollable" data-roll-type="characteristic" data-characteristic-key="calme" data-pair-key="pair2"><i class="fas fa-dice-d20"></i></a>
-          </div>
-        </div>
-        <div class="spirit-pair">
-          <div class="spirit-trait">
-            <span class="{{#if (eq actor.system.characteristics.esprit.pair3.primary 'foi')}}primary-trait{{/if}}">{{actor.system.characteristics.esprit.pair3.foi.label}}</span>
-            <input type="number" name="system.characteristics.esprit.pair3.foi.value" value="{{actor.system.characteristics.esprit.pair3.foi.value}}"/>
-            <a class="rollable" data-roll-type="characteristic" data-characteristic-key="foi" data-pair-key="pair3"><i class="fas fa-dice-d20"></i></a>
-          </div>
-          <span class="spirit-separator">/</span>
-          <div class="spirit-trait">
-            <span class="{{#if (eq actor.system.characteristics.esprit.pair3.primary 'ego')}}primary-trait{{/if}}">{{actor.system.characteristics.esprit.pair3.ego.label}}</span>
-            <input type="number" name="system.characteristics.esprit.pair3.ego.value" value="{{actor.system.characteristics.esprit.pair3.ego.value}}"/>
-            <a class="rollable" data-roll-type="characteristic" data-characteristic-key="ego" data-pair-key="pair3"><i class="fas fa-dice-d20"></i></a>
-          </div>
-        </div>
-		        <h3>Compétences Innées</h3>
-        <div class="skills-list">
-          {{#each actor.system.skills.innees as |skill key|}}
-          <div class="skill-row">
-            <span class="skill-label">{{skill.label}} ({{skill.characteristic}})</span>
+    </div>
+
+    <!-- SECTION : Compétences Innées -->
+    <h3>{{localize "ADAX-FS2.sheet.skills.innate"}}</h3>
+    <div class="skills-list">
+        {{#each actor.system.skills.innees as |skill key|}}
+        <div class="skill-row">
+            <a class="rollable-skill" data-skill-key="{{key}}"><i class="fas fa-dice-d20"></i></a>
+            <span class="skill-label">{{localize skill.label}} ({{localize (lookup ../characteristicKeys skill.characteristic)}})</span>
             <div class="skill-controls">
-              <input type="number" name="system.skills.innees.{{key}}.value" value="{{skill.value}}"/>
-              <a class="rollable-skill" data-skill-key="{{key}}"><i class="fas fa-dice-d20"></i></a>
+                <input type="number" name="system.skills.innees.{{key}}.value" value="{{skill.value}}"/>
             </div>
-          </div>
-          {{/each}}
         </div>
-		
-        <!-- SECTION : Compétences Acquises -->
-        <h3>Compétences Acquises</h3>
-        <ul class="items-list-rich">
-        {{#each actor.items as |item id|}}
-          {{#if (eq item.type "competenceAcquise")}}
-          <li class="item" data-item-id="{{item._id}}">
+        {{/each}}
+    </div>
     
-			<div class="item-image">
-              <!-- Si l'item a une icône définie, on l'affiche. Sinon, on affiche l'image par défaut -->
-              {{#if item.system.icon}}
-                <i class="{{item.system.icon}}" title="{{item.name}}"></i>
-              {{else}}
-                <img src="{{item.img}}" title="{{item.name}}" width="24" height="24"/>
-              {{/if}}
+    <!-- SECTION : Compétences Acquises -->
+    <h3>{{localize "ADAX-FS2.sheet.skills.learned"}}</h3>
+    <ul class="items-list-rich">
+        {{#each learnedSkills as |item id|}}
+        <li class="item" data-item-id="{{item._id}}">
+            <div class="item-image">
+                {{#if item.system.icon}}<i class="{{item.system.icon}}" title="{{localize item.loc.name}}"></i>{{else}}<img src="{{item.img}}" title="{{localize item.loc.name}}" width="24" height="24"/>{{/if}}
             </div>
-
-  
-            <h4 class="item-name" title="{{item.system.description}}">
-                {{item.name}}
-                <!-- CHANGEMENT ICI : On ajoute un champ de saisie si la spé est requise -->
+            <a class="rollable-item-skill" title="Lancer {{localize item.loc.name}}"><i class="fas fa-dice-d20"></i></a>
+            <h4 class="item-name" title="{{localize item.loc.description}}">
+                {{localize item.loc.name}}
                 {{#if item.system.hasSpecialization}}
-                  (<span class="specialization-input" data-name="items.{{item._id}}.system.specialization" contenteditable="true">{{item.system.specialization}}</span>)
+                    (<span class="specialization-input" data-name="items.{{item._id}}.system.specialization" contenteditable="true">{{item.system.specialization}}</span>)
                 {{/if}}
             </h4>
-            <span class="item-char">({{item.system.characteristic}})</span>
+            <span class="item-char">({{localize (lookup ../characteristicKeys item.system.characteristic)}})</span>
             <div class="item-controls">
-              <input type="number" name="items.{{item._id}}.system.value" value="{{item.system.value}}"/>
-              <a class="rollable-item-skill" title="Lancer {{item.name}}"><i class="fas fa-dice-d20"></i></a>
-              <a class="item-control item-edit" title="Modifier"><i class="fas fa-edit"></i></a>
+                <input type="number" name="items.{{item._id}}.system.value" value="{{item.system.value}}"/>
+                <a class="item-control item-edit" title="Modifier"><i class="fas fa-edit"></i></a>
             </div>
-          </li>
-          {{/if}}
+        </li>
         {{/each}}
-        </ul>
-      </section>
+        
+        {{#if (eq learnedSkills.length 0)}}
+        <li class="item-drop-helper">
+            {{localize "ADAX-FS2.sheet.skills.drophelper"}}
+        </li>
+        {{/if}}
+    </ul>
+
+    <!-- SECTION : Qualités et Défauts -->
+    <h3>{{localize "ADAX-FS2.sheet.traits.blessingsCurses"}}</h3>
+    <ul class="items-list-rich">
+        {{#each blessingsCurses as |item id|}}
+        <li class="item" data-item-id="{{item._id}}">
+            <div class="item-image">
+                {{#if item.system.icon}}<i class="{{item.system.icon}}" title="{{localize item.loc.name}}"></i>{{else}}<img src="{{item.img}}" title="{{localize item.loc.name}}" width="24" height="24"/>{{/if}}
+            </div>
+            <h4 class="item-name" title="{{localize item.loc.description}}">{{localize item.loc.name}}</h4>
+            <div class="item-controls">
+                <a class="item-control item-edit" title="Modifier"><i class="fas fa-edit"></i></a>
+                <a class="item-control item-delete" title="Supprimer"><i class="fas fa-trash"></i></a>
+            </div>
+        </li>
+        {{/each}}
+        
+        {{#if (eq blessingsCurses.length 0)}}
+        <li class="item-drop-helper">
+            {{localize "ADAX-FS2.sheet.traits.drophelper"}}
+        </li>
+        {{/if}}
+    </ul>
+
+    <!-- SECTION : Atouts et Handicaps -->
+    <h3>{{localize "ADAX-FS2.sheet.traits.beneficesAfflictions"}}</h3>
+    <ul class="items-list-rich">
+        {{#each beneficesAfflictions as |item id|}}
+        <li class="item" data-item-id="{{item._id}}">
+            <div class="item-image">
+                {{#if item.system.icon}}<i class="{{item.system.icon}}" title="{{localize item.loc.name}}"></i>{{else}}<img src="{{item.img}}" title="{{localize item.loc.name}}" width="24" height="24"/>{{/if}}
+            </div>
+            <h4 class="item-name" title="{{localize item.loc.description}}">{{localize item.loc.name}}</h4>
+            <div class="item-controls">
+                <a class="item-control item-edit" title="Modifier"><i class="fas fa-edit"></i></a>
+                <a class="item-control item-delete" title="Supprimer"><i class="fas fa-trash"></i></a>
+            </div>
+        </li>
+        {{/each}}
+
+        {{#if (eq beneficesAfflictions.length 0)}}
+        <li class="item-drop-helper">
+            {{localize "ADAX-FS2.sheet.traits.drophelper"}}
+        </li>
+        {{/if}}
+    </ul>
+  </section>
 </form>

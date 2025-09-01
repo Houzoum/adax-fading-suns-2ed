@@ -9,58 +9,105 @@
     font-weight: bold;
 }
 
-/* --- SECTION CARACTÉRISTIQUES --- */
+/* --- SECTION CARACTÉRISTIQUES (Version Grille) --- */
 
-/* Conteneur pour une ligne de caractéristique (ex: Force) */
+.fadingsuns .characteristics-container {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+.fadingsuns .char-column {
+    border: 1px solid #bbb;
+    padding: 2px 8px 8px 8px; /* Haut, Droite, Bas, Gauche */
+    border-radius: 5px;
+    background: rgba(0, 0, 0, 0.05);
+    display: flex;
+    flex-direction: column;
+}
+
+.fadingsuns .char-column h3 {
+    /* CORRECTION ICI : On s'assure qu'il n'y a aucune marge en haut */
+    margin: 0 0 8px 0; /* Haut, Droite, Bas, Gauche */
+    padding-bottom: 5px;
+    text-align: center;
+    border-bottom: 1px solid #ccc;
+    font-size: 1.1em;
+    flex-shrink: 0;
+}
+
 .fadingsuns .characteristic-row {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 2px 0;
-    margin-bottom: 5px;
+    padding: 2px 5px;
 }
 
-/* Groupe les contrôles (input + dé) à droite */
-.fadingsuns .characteristic-controls {
-    display: flex;
-    align-items: center;
-}
-
-/* Conteneur pour une paire d'Esprit (ex: Extraverti / Introverti) */
-.fadingsuns .spirit-pair {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    border: 1px solid #ccc;
-    padding: 5px;
-    margin-bottom: 5px;
-}
-
-/* Conteneur pour un seul trait d'Esprit (label, input, dé) */
-.fadingsuns .spirit-trait {
-    display: flex;
-    flex-direction: column; /* Aligne les éléments verticalement */
-    align-items: center; /* Centre les éléments horizontalement */
-    width: 45%; /* Donne une largeur fixe pour un meilleur alignement */
-}
-
-/* Style pour le séparateur "/" */
-.fadingsuns .spirit-separator {
-    font-size: 1.5em;
-    font-weight: bold;
-}
-
-/* Style commun pour les inputs et l'icône de dé */
-.fadingsuns input[type="number"] {
-    width: 50px; /* Donne une largeur fixe aux inputs */
+.fadingsuns .characteristic-row input[type="number"] {
+    width: 35px;
+    flex-shrink: 0;
     text-align: center;
 }
 
-.fadingsuns .rollable {
-    margin-left: 10px;
+.fadingsuns .spirit-pair {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    margin-bottom: 5px;
 }
 
+.fadingsuns .spirit-trait-compact {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    flex-basis: 45%;
+    justify-content: space-between;
+}
+
+.fadingsuns .spirit-trait-compact input[type="number"] {
+    width: 35px;
+    text-align: center;
+}
+
+.fadingsuns .primary-trait {
+    text-decoration: underline;
+    font-weight: bold;
+}
+
+.fadingsuns .spirit-separator {
+    font-weight: bold;
+}
+
+
+/* --- Harmonisation des Titres de Section --- */
+
+.fadingsuns .sheet-body h2,
+.fadingsuns .sheet-body h3 {
+    font-family: "Modesto Condensed", "Palatino Linotype", serif; /* Police thématique de Foundry */
+    font-weight: 700;
+    border-bottom: 2px solid #660000; /* Ligne rouge sombre, style Fading Suns */
+    padding-bottom: 3px;
+    margin: 20px 0 10px 0;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.fadingsuns .sheet-body h2 {
+    font-size: 1.5em; /* Taille pour le titre principal de section */
+}
+
+.fadingsuns .sheet-body h3 {
+    font-size: 1.2em; /* Taille pour les sous-titres */
+    border-bottom-width: 1px;
+    border-color: #aaa;
+}
 /* --- SECTION COMPÉTENCES --- */
+
+.fadingsuns .skill-controls input[type="number"] {
+    width: 40px;
+    text-align: center;
+}
 
 .fadingsuns .skills-list {
     display: grid; /* On utilise une grille pour un alignement sur plusieurs colonnes */
@@ -116,8 +163,14 @@
 .fadingsuns .items-list-rich .item-controls {
     display: flex;
     align-items: center;
-    flex: 0 0 120px; /* Donne une largeur fixe aux contrôles */
+    flex: 0 0 120px;
     justify-content: flex-end;
+}
+
+.fadingsuns .items-list-rich .item-controls input[type="number"] {
+    width: 40px; /* Même largeur que les compétences innées */
+    text-align: center;
+    margin-right: 5px; /* Ajoute un peu d'espace avant les icônes */
 }
 
 .fadingsuns .items-list-rich .item-char {
@@ -140,7 +193,7 @@
 
 /* Simule le placeholder pour les champs vides */
 .fadingsuns .specialization-input:empty::before {
-    content: "Spécialité";
+    content: var(--specialization-placeholder);
     color: #888;
     font-style: italic;
 }
@@ -149,4 +202,23 @@
     font-size: 24px;
     text-align: center;
     width: 24px;
+}
+.fadingsuns .items-list-rich .item-image {
+    flex: 0 0 24px;
+    margin-right: 8px;
+}
+
+.fadingsuns .items-list-rich .rollable-item-skill {
+    margin-right: 8px; /* Ajoute de l'espace à droite du dé */
+}
+.fadingsuns .item-drop-helper {
+    height: 40px;
+    line-height: 40px;
+    text-align: center;
+    border: 2px dashed #ccc;
+    color: #888;
+    margin-top: 10px;
+}
+.fadingsuns .skill-row > .rollable-skill {
+    margin-right: 8px; /* Ajoute de l'espace à droite du dé */
 }

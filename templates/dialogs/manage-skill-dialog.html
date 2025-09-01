@@ -1,0 +1,18 @@
+<form>
+    <div class="form-group">
+        <label>{{localize "ADAX-FS2.dialog.manage.charLabel"}}</label>
+        <select name="characteristic">
+            {{selectOptions characteristics}}
+        </select>
+    </div>
+
+    <div class="form-group">
+        <label>{{localize "ADAX-FS2.dialog.manage.specLabel"}}</label>
+        <input type="text" name="specialization" value="{{specialization}}"/>
+    </div>
+
+    <div class="form-group">
+        <label>{{localize "ADAX-FS2.dialog.manage.hasSpecLabel"}}</label>
+        <input type="checkbox" name="hasSpecialization" {{checked hasSpecialization}}/>
+    </div>
+</form>

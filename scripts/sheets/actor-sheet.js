@@ -8,236 +8,325 @@ export class FadingSunsActorSheet extends foundry.appv1.sheets.ActorSheet {
     return foundry.utils.mergeObject(super.defaultOptions, {
       classes: ["fadingsuns", "sheet", "actor"],
       template: "systems/adax-fading-suns-2ed/templates/character-sheet.html",
-      width: 600,
-      height: 800 // Hauteur augmentée pour tout afficher
+      width: 780,
+      height: 800
     });
   }
 
-  /**
-   * Active tous les écouteurs d'événements pour la fiche.
-   */
+  async getData(options) {
+    const context = await super.getData(options);
+
+    // ... (la partie sur characteristicKeys reste la même)
+    context.characteristicKeys = { /* ... */ };
+
+    // Initialisation des listes pour tous nos types d'items
+    context.learnedSkills = [];
+    context.blessingsCurses = [];
+    context.beneficesAfflictions = [];
+
+    // Boucle pour trier tous les items de l'acteur
+    for (const item of this.actor.items) {
+        // On crée la clé de traduction pour le nom et la description
+        // ex: "ADAX-FS2.items.blessings.some-blessing.name"
+        const key = item.name.slugify({strict: true});
+        let itemTypeKey;
+        if (item.type === 'competenceAcquise') itemTypeKey = 'skills';
+        if (item.type === 'qualiteDefaut') itemTypeKey = 'blessings';
+        if (item.type === 'atoutHandicap') itemTypeKey = 'benefices';
+
+        item.loc = {
+            name: `ADAX-FS2.items.${itemTypeKey}.${key}.name`,
+            description: `ADAX-FS2.items.${itemTypeKey}.${key}.description`
+        };
+
+        // On trie l'item dans la bonne liste
+        if (item.type === "competenceAcquise") {
+            context.learnedSkills.push(item);
+        } else if (item.type === "qualiteDefaut") {
+            context.blessingsCurses.push(item);
+        } else if (item.type === "atoutHandicap") {
+            context.beneficesAfflictions.push(item);
+        }
+    }
+
+    return context;
+  }
+
   activateListeners(html) {
     super.activateListeners(html);
-
-    // Jets de Caractéristiques
-    html.find('.rollable').click(this._onRollCharacteristic.bind(this));
-
-    // Jets de Compétences Innées
-    html.find('.rollable-skill').click(this._onRollSkill.bind(this));
-
-    // -- Écouteurs pour les Items (Compétences Acquises) --
-    // Ouvrir la fiche de l'item pour l'éditer
+    html.find('.rollable-skill').click(this._onSkillRollDialog.bind(this));
+    html.find('.rollable-item-skill').click(this._onSkillRollDialog.bind(this));
     html.find('.item-edit').click(this._onItemEdit.bind(this));
-
-    // Lancer un jet depuis un item
-    html.find('.rollable-item-skill').click(this._onRollItemSkill.bind(this));
   }
-  /**
-   * Surcharge de la méthode de mise à jour pour gérer correctement les items.
-   * @param {Event} event   L'événement qui a déclenché la mise à jour.
-   * @param {object} formData L'objet contenant les données du formulaire.
-   */
-async _updateObject(event, formData) {
+
+  async _updateObject(event, formData) {
     const actor = this.object;
-    // On transforme le formData en un objet simple pour pouvoir le manipuler.
     const expandedData = foundry.utils.expandObject(formData);
-    
-    // On gère les spans éditables séparément
     this.form.querySelectorAll('span[contenteditable="true"][data-name]').forEach(span => {
         const name = span.dataset.name;
         const value = span.textContent;
         foundry.utils.setProperty(expandedData, name, value);
     });
-
     const updates = [];
     const itemsData = expandedData.items || {};
-
     for (const [id, data] of Object.entries(itemsData)) {
         updates.push({ _id: id, ...data });
     }
-
     if (updates.length > 0) {
         await actor.updateEmbeddedDocuments("Item", updates);
     }
-    
-    // On s'assure que la clé "items" est retirée pour éviter les erreurs
     delete expandedData.items;
-
-    // On laisse Foundry gérer le reste des mises à jour
     return actor.update(expandedData);
   }
-  // --- GESTIONNAIRES D'ÉVÉNEMENTS (LES FONCTIONS "_on...") ---
 
-  /**
-   * Gère le clic pour éditer un item.
+    /**
+   * Gère l'événement de glisser-déposer d'un item sur la fiche.
+   * @param {DragEvent} event   L'événement de glisser-déposer.
+   * @param {object} data       Les données de l'item déposé.
    */
-  _onItemEdit(event) {
+  async _onDropItem(event, data) {
+    if (!this.isEditable) return false;
+
+    const item = await Item.fromDropData(data);
+    const itemData = item.toObject();
+
+    // Logique personnalisée ici
+    console.log("Item déposé :", itemData.name, "de type", itemData.type);
+
+    // On laisse Foundry gérer la création de l'item sur l'acteur
+    return super._onDropItem(event, data);
+  }
+  // --- GESTIONNAIRES D'ÉVÉNEMENTS ---
+
+  async _onItemEdit(event) {
     event.preventDefault();
     const element = event.currentTarget;
     const itemId = element.closest(".item").dataset.itemId;
     const item = this.actor.items.get(itemId);
-    item.sheet.render(true);
+    if (!item) return;
+
+    // 1. Préparer les données pour le template de la fenêtre
+    const templateData = {
+        specialization: item.system.specialization,
+        hasSpecialization: item.system.hasSpecialization,
+        characteristics: this._getCharacteristicsOptions() // On appelle notre nouvelle fonction
+    };
+    // Pré-sélectionner la bonne caractéristique
+    templateData.characteristics.forEach(c => {
+        if (c.value === item.system.characteristic) c.selected = true;
+    });
+
+    const content = await foundry.applications.handlebars.renderTemplate(
+        "systems/adax-fading-suns-2ed/templates/dialogs/manage-skill-dialog.html", 
+        templateData
+    );
+
+    // 2. Créer et afficher la fenêtre de dialogue (partie inchangée)
+    new Dialog({
+        title: `${game.i18n.localize("ADAX-FS2.dialog.manage.title")}: ${game.i18n.localize(item.loc.name)}`,
+        content: content,
+        buttons: {
+            update: {
+                icon: '<i class="fas fa-save"></i>',
+                label: game.i18n.localize("ADAX-FS2.dialog.manage.updateButton"),
+                callback: (html) => {
+                    const newCharacteristic = html.find('[name="characteristic"]').val();
+                    const newSpecialization = html.find('[name="specialization"]').val();
+                    const newHasSpecialization = html.find('[name="hasSpecialization"]').is(':checked');
+                    item.update({
+                        'system.characteristic': newCharacteristic,
+                        'system.specialization': newSpecialization,
+                        'system.hasSpecialization': newHasSpecialization
+                    });
+                }
+            },
+            delete: {
+                icon: '<i class="fas fa-trash"></i>',
+                label: game.i18n.localize("ADAX-FS2.dialog.manage.deleteButton"),
+                callback: () => {
+                    this._onItemDeleteConfirm(itemId);
+                }
+            }
+        },
+        default: "update"
+    }).render(true);
   }
 
-  /**
-   * Gère le jet pour une compétence innée (depuis les données de l'acteur).
-   */
-  async _onRollSkill(event) {
+  async _onItemDeleteConfirm(itemId) {
+    const item = this.actor.items.get(itemId);
+    if (!item) return;
+  
+    const title = game.i18n.localize("ADAX-FS2.dialog.delete.title");
+    const content = `<p>${game.i18n.format("ADAX-FS2.dialog.delete.content", {name: game.i18n.localize(item.loc.name)})}</p>`;
+  
+    const confirmed = await Dialog.confirm({
+        title: title,
+        content: content,
+        yes: () => true,
+        no: () => false,
+        defaultYes: false
+    });
+  
+    if (confirmed) {
+        this.actor.deleteEmbeddedDocuments("Item", [itemId]);
+    }
+  }
+  async _onSkillRollDialog(event) {
     event.preventDefault();
     const element = event.currentTarget;
-    const skillKey = element.dataset.skillKey;
-    const skill = this.actor.system.skills.innees[skillKey];
+    let skill, skillName, characteristicKey;
+
+    if (element.classList.contains('rollable-skill')) {
+        const skillKey = element.dataset.skillKey;
+        skill = this.actor.system.skills.innees[skillKey];
+        skillName = skill.label;
+        characteristicKey = skill.characteristic;
+    } else {
+        const itemId = element.closest(".item").dataset.itemId;
+        const itemSkill = this.actor.items.get(itemId);
+        skill = itemSkill.system;
+        skillName = itemSkill.name;
+        characteristicKey = skill.characteristic;
+    }
     if (!skill) return;
 
     if (event.shiftKey) {
-      this._openCharacteristicSelectorDialog(skill, skill.label);
-    } else {
-      const characteristicKey = skill.characteristic;
-      this._executeRoll(skill, characteristicKey);
+        const newCharKey = await this._openCharacteristicSelectorDialog(skill, skillName);
+        if (newCharKey) {
+            characteristicKey = newCharKey;
+        } else {
+            return;
+        }
     }
-  }
-
-  /**
-   * Gère le jet pour une compétence acquise (qui est un Item).
-   */
-  async _onRollItemSkill(event) {
-    event.preventDefault();
-    const element = event.currentTarget;
-    const itemId = element.closest(".item").dataset.itemId;
-    const itemSkill = this.actor.items.get(itemId);
-    if (!itemSkill) return;
-
-    if (event.shiftKey) {
-      this._openCharacteristicSelectorDialog(itemSkill.system, itemSkill.name);
-    } else {
-      const characteristicKey = itemSkill.system.characteristic;
-      this._executeRoll(itemSkill.system, characteristicKey, itemSkill.name);
-    }
-  }
-
-  /**
-   * Gère le jet pour une caractéristique pure.
-   */
-  async _onRollCharacteristic(event) {
-    event.preventDefault();
-    const element = event.currentTarget;
-    const characteristicKey = element.dataset.characteristicKey;
-    const fakeSkill = { value: 0, label: "" }; // Une compétence "vide" avec une valeur de 0
-    this._executeRoll(fakeSkill, characteristicKey, "", true);
+    
+    this._openModifierDialog(skill, characteristicKey, skillName);
   }
 
   // --- LOGIQUE CENTRALE ---
 
   /**
-   * Ouvre la fenêtre de dialogue pour choisir une caractéristique.
-   * @param {object} skillData Les données de la compétence (system)
-   * @param {string} skillName Le nom de la compétence à afficher
+   * Génère la liste des caractéristiques pour les listes déroulantes.
+   * @returns {Array<object>} Un tableau d'objets {value, label}.
+   * @private
    */
-    async _openCharacteristicSelectorDialog(skillData, skillName) {
-        const templateData = {
-            choices: [
-                { value: "force", label: "Force" }, { value: "dexterite", label: "Dextérité" },
-                { value: "endurance", label: "Endurance" }, { value: "intelligence", label: "Intelligence" },
-                { value: "perception", label: "Perception" }, { value: "tech", label: "Tech" },
-                { value: "extraverti", label: "Extraverti" }, { value: "introverti", label: "Introverti" },
-                { value: "passion", label: "Passion" }, { value: "calme", label: "Calme" },
-                { value: "foi", label: "Foi" }, { value: "ego", label: "Ego" }
-            ]
-        };
-        templateData.choices.forEach(c => {
-            if (c.value === skillData.characteristic) c.selected = true;
-        });
+  _getCharacteristicsOptions() {
+    return [
+        { value: "force", label: game.i18n.localize("ADAX-FS2.characteristics.corps.force") },
+        { value: "dexterite", label: game.i18n.localize("ADAX-FS2.characteristics.corps.dexterite") },
+        { value: "endurance", label: game.i18n.localize("ADAX-FS2.characteristics.corps.endurance") },
+        { value: "intelligence", label: game.i18n.localize("ADAX-FS2.characteristics.intellect.intelligence") },
+        { value: "perception", label: game.i18n.localize("ADAX-FS2.characteristics.intellect.perception") },
+        { value: "tech", label: game.i18n.localize("ADAX-FS2.characteristics.intellect.tech") },
+        { value: "extraverti", label: game.i18n.localize("ADAX-FS2.characteristics.esprit.extraverti") },
+        { value: "introverti", label: game.i18n.localize("ADAX-FS2.characteristics.esprit.introverti") },
+        { value: "passion", label: game.i18n.localize("ADAX-FS2.characteristics.esprit.passion") },
+        { value: "calme", label: game.i18n.localize("ADAX-FS2.characteristics.esprit.calme") },
+        { value: "foi", label: game.i18n.localize("ADAX-FS2.characteristics.esprit.foi") },
+        { value: "ego", label: game.i18n.localize("ADAX-FS2.characteristics.esprit.ego") },
+        { value: "", label: game.i18n.localize("ADAX-FS2.characteristics.none") } // Pour les cas sans carac
+    ];
+  }
 
-        const content = await foundry.applications.handlebars.renderTemplate(
-            "systems/adax-fading-suns-2ed/templates/dialogs/select-characteristic-dialog.html", 
-            templateData
-        );
+  async _openCharacteristicSelectorDialog(skillData, skillName) {
+    const localizedSkillName = game.i18n.localize(skillName);
     
+    const templateData = {
+        label: game.i18n.localize("ADAX-FS2.dialog.select.label"),
+        choices: this._getCharacteristicsOptions(), // On appelle notre nouvelle fonction
+        default: skillData.characteristic || "intelligence"
+    };
+    templateData.choices.forEach(c => {
+        if (c.value === skillData.characteristic) c.selected = true;
+    });
+
+    const content = await foundry.applications.handlebars.renderTemplate(
+        "systems/adax-fading-suns-2ed/templates/dialogs/select-characteristic-dialog.html", 
+        templateData
+    );
+
+    return new Promise(resolve => {
         new Dialog({
-            title: `Jet de ${skillName}`,
+            title: `${game.i18n.localize("ADAX-FS2.dialog.roll.title")} : ${localizedSkillName}`,
             content: content,
             buttons: {
                 roll: {
                     icon: '<i class="fas fa-dice-d20"></i>',
-                    label: "Lancer",
-                    callback: (html) => {
-                        const selectedCharKey = html.find('[name="characteristic-key"]').val();
-                        this._executeRoll(skillData, selectedCharKey, skillName);
-                    }
+                    label: game.i18n.localize("ADAX-FS2.dialog.roll.button"),
+                    callback: (html) => resolve(html.find('[name="characteristic-key"]').val())
                 },
-                cancel: { icon: '<i class="fas fa-times"></i>', label: "Annuler" }
+                cancel: {
+                    icon: '<i class="fas fa-times"></i>',
+                    label: game.i18n.localize("ADAX-FS2.dialog.cancel.button"),
+                    callback: () => resolve(null)
+                }
             },
-            default: "roll"
+            default: "roll",
+            close: () => resolve(null)
         }).render(true);
-    }
+    });
+  }
 
-  /**
-   * Exécute le jet de dé et envoie le message au chat. C'est la fonction centrale.
-   * @param {object} skillData Les données de la compétence (innée ou item.system)
-   * @param {string} characteristicKey La clé de la caractéristique à utiliser
-   * @param {string} [skillNameOverride=""] Un nom à utiliser à la place de skillData.label
-   * @param {boolean} [isCharacteristicOnly=false] S'il s'agit d'un jet de caractéristique pure
-   */
-  async _executeRoll(skillData, characteristicKey, skillNameOverride = "", isCharacteristicOnly = false) {
+  async _openModifierDialog(skillData, characteristicKey, skillName) {
+    const content = await foundry.applications.handlebars.renderTemplate( "systems/adax-fading-suns-2ed/templates/dialogs/roll-modifier-dialog.html", { label: game.i18n.localize("ADAX-FS2.dialog.modifier.label") });
+    new Dialog({
+        title: `${game.i18n.localize("ADAX-FS2.dialog.roll.title")} : ${game.i18n.localize(skillName)}`,
+        content: content,
+        buttons: {
+            roll: {
+                icon: '<i class="fas fa-dice-d20"></i>',
+                label: game.i18n.localize("ADAX-FS2.dialog.roll.button"),
+                callback: (html) => {
+                    const modifier = parseInt(html.find('[name="modifier"]').val()) || 0;
+                    this._executeRoll(skillData, characteristicKey, skillName, modifier);
+                }
+            }
+        },
+        default: "roll"
+    }).render(true);
+  }
+
+  async _executeRoll(skillData, characteristicKey, skillNameOverride, modifier = 0) {
     let characteristic;
-    // Boucle de recherche robuste pour trouver la caractéristique n'importe où
     for (const group of Object.values(this.actor.system.characteristics)) {
-      if (typeof group[characteristicKey] !== 'undefined') {
-        characteristic = group[characteristicKey];
-        break;
-      }
+      if (typeof group[characteristicKey] !== 'undefined') { characteristic = group[characteristicKey]; break; }
       for (const pair of Object.values(group)) {
-        if (typeof pair[characteristicKey] !== 'undefined') {
-          characteristic = pair[characteristicKey];
-          break;
-        }
+        if (typeof pair[characteristicKey] !== 'undefined') { characteristic = pair[characteristicKey]; break; }
       }
       if (characteristic) break;
     }
-    
-    if (!characteristic || typeof characteristic.value === 'undefined') {
-      ui.notifications.error(`Caractéristique "${characteristicKey}" non trouvée.`);
-      return;
-    }
+    if (!characteristic || typeof characteristic.value === 'undefined') { return ui.notifications.error(`Caractéristique "${characteristicKey}" non trouvée.`); }
 
-    const skillName = skillNameOverride || skillData.label;
-    // CORRECTION ICI : On utilise bien skillData.value
-    const goalNumber = characteristic.value + skillData.value;
-    const rollLabel = isCharacteristicOnly ? characteristic.label : `${characteristic.label} + ${skillName}`;
+    const localizedCharName = game.i18n.localize(characteristic.label);
+    const localizedSkillName = game.i18n.localize(skillNameOverride || skillData.label);
+    const goalNumber = characteristic.value + (skillData.value || 0) + modifier;
+    const rollLabel = `${localizedCharName} + ${localizedSkillName}`;
     
     const roll = new Roll("1d20");
     await roll.evaluate();
     game.dice3d?.showForRoll(roll);
     const d20Result = roll.total;
 
-    let outcome = "";
+    let outcomeKey = "";
     let victoryPoints = 0;
     let isCritical = false;
 
-    if (d20Result === 20) { outcome = "Échec Critique !"; }
-    else if (d20Result === 19) { outcome = "Échec Automatique."; }
-    else if (d20Result === 1) {
-      outcome = "Succès Automatique !";
-      victoryPoints = this._calculateVictoryPoints(d20Result);
-    } else if (d20Result === goalNumber) {
-      outcome = "Succès Critique !";
-      victoryPoints = this._calculateVictoryPoints(d20Result) * 2;
-      isCritical = true;
-    } else if (d20Result <= goalNumber) {
-      outcome = "Succès.";
-      victoryPoints = this._calculateVictoryPoints(d20Result);
-    } else {
-      outcome = "Échec.";
-    }
+    if (d20Result === 20) { outcomeKey = "ADAX-FS2.chat.outcome.critFailure"; }
+    else if (d20Result === 19) { outcomeKey = "ADAX-FS2.chat.outcome.autoFailure"; }
+    else if (d20Result === 1) { outcomeKey = "ADAX-FS2.chat.outcome.autoSuccess"; victoryPoints = this._calculateVictoryPoints(d20Result); }
+    else if (d20Result === goalNumber) { outcomeKey = "ADAX-FS2.chat.outcome.critSuccess"; victoryPoints = this._calculateVictoryPoints(d20Result) * 2; isCritical = true; }
+    else if (d20Result <= goalNumber) { outcomeKey = "ADAX-FS2.chat.outcome.success"; victoryPoints = this._calculateVictoryPoints(d20Result); }
+    else { outcomeKey = "ADAX-FS2.chat.outcome.failure"; }
+    const outcome = game.i18n.localize(outcomeKey);
 
     let messageContent = `
-        <h2>Jet de ${rollLabel}</h2>
-        <p><strong>Objectif :</strong> ${goalNumber} ou moins</p>
-        <p><strong>Résultat :</strong> <span class="roll ${isCritical ? 'critical' : ''}">${d20Result}</span></p>
+        <h2>${rollLabel}</h2>
+        <p><strong>${game.i18n.localize("ADAX-FS2.chat.goal")} :</strong> ${goalNumber} ${game.i18n.localize("ADAX-FS2.chat.orLess")} 
+           <em>(${characteristic.value} carac + ${skillData.value || 0} comp + ${modifier} mod)</em></p>
+        <p><strong>${game.i18n.localize("ADAX-FS2.chat.result")} :</strong> <span class="roll ${isCritical ? 'critical' : ''}">${d20Result}</span></p>
         <h3>${outcome}</h3>
     `;
     if (victoryPoints > 0) {
-      messageContent += `<p><strong>${victoryPoints} Point(s) de Victoire</strong></p>`;
+        messageContent += `<p><strong>${victoryPoints} ${game.i18n.localize("ADAX-FS2.chat.victoryPoints")}</strong></p>`;
     }
 
     ChatMessage.create({
@@ -246,9 +335,6 @@ async _updateObject(event, formData) {
     });
   }
 
-  /**
-   * Calcule les points de victoire.
-   */
   _calculateVictoryPoints(rollResult) {
     if (rollResult <= 5) return 1;
     if (rollResult <= 8) return 2;

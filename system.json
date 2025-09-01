@@ -12,6 +12,18 @@
     "minimum": "11",
     "verified": "11"
   },
+  "languages": [
+    {
+      "lang": "en",
+      "name": "English",
+      "path": "lang/en.json"
+    },
+    {
+      "lang": "fr",
+      "name": "Français",
+      "path": "lang/fr.json"
+    }
+  ],
   "esmodules": [
     "scripts/adax-fading-suns-2ed.js"
   ],
@@ -20,11 +32,23 @@
   ],
  "packs": [
       {
-        "name": "competences-acquises",
-        "label": "Compétences Acquises",
-        "path": "packs/competences-acquises",
-        "type": "Item"
-      }
+      "name": "competences-acquises",
+      "label": "ADAX-FS2.compendium.skills.learned.label",
+      "path": "packs/competences-acquises",
+      "type": "Item"
+    },
+    {
+      "name": "qualites-defauts",
+      "label": "ADAX-FS2.compendium.traits.blessingsCurses.label",
+      "path": "packs/qualites-defauts",
+      "type": "Item"
+    },
+    {
+      "name": "atouts-handicaps",
+      "label": "ADAX-FS2.compendium.traits.beneficesAfflictions.label",
+      "path": "packs/atouts-handicaps",
+      "type": "Item"
+    }
     ], 
   "url": "",
   "manifest": "",
