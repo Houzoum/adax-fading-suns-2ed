@@ -144,3 +144,9 @@
     color: #888;
     font-style: italic;
 }
+
+.fadingsuns .items-list-rich .item-image i {
+    font-size: 24px;
+    text-align: center;
+    width: 24px;
+}

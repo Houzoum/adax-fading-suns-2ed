@@ -53,7 +53,8 @@
       "characteristic": "intelligence",
       "value": 0,
       "hasSpecialization": false,
-      "specialization": ""
+      "specialization": "",
+      "icon": "fas fa-question-circle"
     },
     "arme": {
         "description": "",

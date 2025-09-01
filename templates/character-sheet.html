@@ -114,9 +114,17 @@
         {{#each actor.items as |item id|}}
           {{#if (eq item.type "competenceAcquise")}}
           <li class="item" data-item-id="{{item._id}}">
-            <div class="item-image">
-              <img src="{{item.img}}" title="{{item.name}}" width="24" height="24"/>
+    
+			<div class="item-image">
+              <!-- Si l'item a une icône définie, on l'affiche. Sinon, on affiche l'image par défaut -->
+              {{#if item.system.icon}}
+                <i class="{{item.system.icon}}" title="{{item.name}}"></i>
+              {{else}}
+                <img src="{{item.img}}" title="{{item.name}}" width="24" height="24"/>
+              {{/if}}
             </div>
+
+  
             <h4 class="item-name" title="{{item.system.description}}">
                 {{item.name}}
                 <!-- CHANGEMENT ICI : On ajoute un champ de saisie si la spé est requise -->
