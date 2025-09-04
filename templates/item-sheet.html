@@ -2,31 +2,127 @@
   <header class="sheet-header">
     <img class="profile-img" src="{{item.img}}" data-edit="img" title="{{item.name}}"/>
     <div class="header-fields">
-      <h1 class="charname"><input name="name" type="text" value="{{item.name}}" placeholder="Nom de la compétence"/></h1>
+      <h1 class="charname"><input name="name" type="text" value="{{item.name}}" placeholder="Nom de l'objet"/></h1>
     </div>
   </header>
-    <div class="form-group">
-        <label>Type d'Objet</label>
-        <input type="text" name="type" value="{{item.type}}" disabled/>
-    </div>
+
   <section class="sheet-body">
+
+    <!-- ====================================================================== -->
+    <!-- SECTION SPÉCIFIQUE AU TYPE D'ITEM                                      -->
+    <!-- ====================================================================== -->
+
+    <!-- Champs pour les COMPÉTENCES ACQUISES -->
+    {{#if (eq item.type "competenceAcquise")}}
     <div class="form-group">
-        <label>Caractéristique par défaut</label>
+        <label>{{localize "ADAX-FS2.itemSheet.charDefault"}}</label>
         <select name="system.characteristic">
-            {{selectOptions characteristics}}
+            {{selectOptions config.characteristics}}
         </select>
     </div>
-	<div class="form-group">
-        <label>Icône (classe Font Awesome)</label>
-        <input type="text" name="system.icon" value="{{system.icon}}"/>
-    </div>
     <div class="form-group">
-        <label>Nécessite une spécialisation ?</label>
+        <label>{{localize "ADAX-FS2.itemSheet.hasSpec"}}</label>
         <input type="checkbox" name="system.hasSpecialization" {{checked system.hasSpecialization}} />
     </div>
-    <div class="form-group editor">
-        <label>Description</label>
-        {{editor system.description target="system.description" button=true owner=owner editable=editable}}
+    {{/if}}
+
+    <!-- Champs pour les QUALITÉS & DÉFAUTS -->
+    {{#if (eq item.type "qualiteDefaut")}}
+    <div class="form-group">
+        <label>{{localize "ADAX-FS2.itemSheet.type"}}</label>
+        <select name="system.type">
+            {{selectOptions config.blessingOrCurse}}
+        </select>
     </div>
+    <div class="form-group">
+        <label>{{localize "ADAX-FS2.itemSheet.cost"}}</label>
+        <input type="number" name="system.cost" value="{{system.cost}}"/>
+    </div>
+    {{/if}}
+
+    <!-- Champs pour les ATOUTS & HANDICAPS -->
+    {{#if (eq item.type "atoutHandicap")}}
+    <div class="form-group">
+        <label>{{localize "ADAX-FS2.itemSheet.type"}}</label>
+        <select name="system.type">
+            {{selectOptions config.beneficeOrAffliction}}
+        </select>
+    </div>
+    <div class="form-group">
+        <label>{{localize "ADAX-FS2.itemSheet.category"}}</label>
+        <input type="text" name="system.category" value="{{system.category}}"/>
+    </div>
+    <hr/>
+    <h4>{{localize "ADAX-FS2.itemSheet.simpleTrait"}}</h4>
+    <div class="form-group">
+        <label>{{localize "ADAX-FS2.itemSheet.cost"}}</label>
+        <input type="number" name="system.cost" value="{{system.cost}}"/>
+    </div>
+    <hr/>
+    <div class="flex-group-center">
+        <h4>{{localize "ADAX-FS2.itemSheet.multipleLevels"}}</h4>
+        <input type="checkbox" name="system.hasLevels" {{checked system.hasLevels}}/>
+    </div>
+    {{#if system.hasLevels}}
+    <div class="levels-list">
+        <div class="level-row header">
+            <span>{{localize "ADAX-FS2.itemSheet.level.name"}}</span>
+            <span>{{localize "ADAX-FS2.itemSheet.level.cost"}}</span>
+            <span>{{localize "ADAX-FS2.itemSheet.level.description"}}</span>
+            <span></span>
+        </div>
+        {{#each system.levels as |level index|}}
+        <div class="level-row">
+            <input type="text" name="system.levels.{{index}}.name" value="{{level.name}}"/>
+            <input type="number" name="system.levels.{{index}}.cost" value="{{level.cost}}"/>
+            <input type="text" name="system.levels.{{index}}.description" value="{{level.description}}"/>
+            <a class="delete-level" data-type="levels" data-index="{{index}}"><i class="fas fa-trash"></i></a>
+        </div>
+        {{/each}}
+        <a class="add-level" data-type="levels"><i class="fas fa-plus"></i> {{localize "ADAX-FS2.itemSheet.level.add"}}</a>
+    </div>
+    {{/if}}
+    <hr/>
+    <div class="flex-group-center">
+        <h4>{{localize "ADAX-FS2.itemSheet.additionalOptions"}}</h4>
+        <input type="checkbox" name="system.hasOptions" {{checked system.hasOptions}}/>
+    </div>
+    {{#if system.hasOptions}}
+    <div class="levels-list">
+        <div class="level-row header">
+            <span>{{localize "ADAX-FS2.itemSheet.level.name"}}</span>
+            <span>{{localize "ADAX-FS2.itemSheet.level.cost"}}</span>
+            <span>{{localize "ADAX-FS2.itemSheet.level.description"}}</span>
+            <span></span>
+        </div>
+        {{#each system.options as |option index|}}
+        <div class="level-row">
+            <input type="text" name="system.options.{{index}}.name" value="{{option.name}}"/>
+            <input type="number" name="system.options.{{index}}.cost" value="{{option.cost}}"/>
+            <input type="text" name="system.options.{{index}}.description" value="{{option.description}}"/>
+            <a class="delete-level" data-type="options" data-index="{{index}}"><i class="fas fa-trash"></i></a>
+        </div>
+        {{/each}}
+        <a class="add-level" data-type="options"><i class="fas fa-plus"></i> {{localize "ADAX-FS2.itemSheet.option.add"}}</a>
+    </div>
+    {{/if}}
+    {{/if}}
+
+    <!-- ====================================================================== -->
+    <!-- SECTION COMMUNE À TOUS LES ITEMS                                       -->
+    <!-- ====================================================================== -->
+
+    <hr/>
+
+    <div class="form-group">
+        <label>{{localize "ADAX-FS2.itemSheet.icon"}}</label>
+        <input type="text" name="system.icon" value="{{system.icon}}"/>
+    </div>
+    
+    <div class="form-group">
+        <label>{{localize "ADAX-FS2.itemSheet.description"}}</label>
+        <textarea name="system.description">{{system.description}}</textarea>
+    </div>
+
   </section>
 </form>

@@ -1,0 +1,29 @@
+<form>
+    {{#if hasLevels}}
+    <div class="form-group configuration-section">
+        <h4>{{localize "ADAX-FS2.dialog.configure.level"}}</h4>
+        <div class="levels">
+        {{#each levels as |level index|}}
+            <label class="level-option">
+                <input type="radio" name="level" value="{{index}}" id="level-{{index}}" {{checked isActive}}>
+                <label for="level-{{index}}"><strong>{{localize level.name}} ({{level.cost}} pts):</strong> {{localize level.description}}</label>
+            </label>
+        {{/each}}
+        </div>
+    </div>
+    {{/if}}
+
+    {{#if hasOptions}}
+    <div class="form-group configuration-section">
+        <h4>{{localize "ADAX-FS2.dialog.configure.options"}}</h4>
+        <div class="options">
+        {{#each options as |option index|}}
+            <label class="option-choice">
+                <input type="checkbox" name="option-{{index}}" id="option-{{index}}" {{checked isActive}}>
+                <label for="option-{{index}}"><strong>{{localize option.name}} ({{option.cost}} pts):</strong> {{localize option.description}}</label>
+            </label>
+        {{/each}}
+        </div>
+    </div>
+    {{/if}}
+</form>

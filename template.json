@@ -64,11 +64,18 @@
     "qualiteDefaut": {
       "description": "",
       "type": "qualite",
+      "cost": 0,
       "icon": "fas fa-star"
     },
     "atoutHandicap": {
       "description": "",
       "type": "atout",
+      "category": "background",
+      "cost": 0,
+      "hasLevels": false,
+      "levels": [],
+      "hasOptions": false,
+      "options": [],
       "icon": "fas fa-plus-circle"
     },
     "arme": {

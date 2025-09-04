@@ -1,4 +1,3 @@
-// adax-fading-suns-2ed/scripts/sheets/item-sheet.js
 export class FadingSunsItemSheet extends foundry.appv1.sheets.ItemSheet {
 
     static get defaultOptions() {
@@ -13,21 +12,117 @@ export class FadingSunsItemSheet extends foundry.appv1.sheets.ItemSheet {
     async getData(options) {
         const context = await super.getData(options);
         context.system = context.item.system;
-        context.characteristics = [
-            { value: "force", label: "Force", selected: context.system.characteristic === "force" },
-            { value: "dexterite", label: "Dextérité", selected: context.system.characteristic === "dexterite" },
-            { value: "endurance", label: "Endurance", selected: context.system.characteristic === "endurance" },
-            { value: "intelligence", label: "Intelligence", selected: context.system.characteristic === "intelligence" },
-            { value: "perception", label: "Perception", selected: context.system.characteristic === "perception" },
-            { value: "tech", label: "Tech", selected: context.system.characteristic === "tech" },
-            { value: "extraverti", label: "Extraverti", selected: context.system.characteristic === "extraverti" },
-            { value: "introverti", label: "Introverti", selected: context.system.characteristic === "introverti" },
-            { value: "passion", label: "Passion", selected: context.system.characteristic === "passion" },
-            { value: "calme", label: "Calme", selected: context.system.characteristic === "calme" },
-            { value: "foi", label: "Foi", selected: context.system.characteristic === "foi" },
-            { value: "ego", label: "Ego", selected: context.system.characteristic === "ego" },
-            { value: "", label: "Aucune", selected: context.system.characteristic === "" }
-        ];
+        context.config = {
+            characteristics: this._getCharacteristicsOptions(),
+            blessingOrCurse: [
+                { value: "qualite", label: game.i18n.localize("ADAX-FS2.itemSheet.blessing") },
+                { value: "defaut", label: game.i18n.localize("ADAX-FS2.itemSheet.curse") }
+            ],
+            beneficeOrAffliction: [
+                { value: "atout", label: game.i18n.localize("ADAX-FS2.itemSheet.benefice") },
+                { value: "handicap", label: game.i18n.localize("ADAX-FS2.itemSheet.affliction") }
+            ]
+        };
+        context.config.characteristics.forEach(c => {
+            if (c.value === context.system.characteristic) c.selected = true;
+        });
+        if (context.item.type === 'qualiteDefaut') {
+            context.config.blessingOrCurse.forEach(t => {
+                if (t.value === context.system.type) t.selected = true;
+            });
+        }
+        if (context.item.type === 'atoutHandicap') {
+            context.config.beneficeOrAffliction.forEach(t => {
+                if (t.value === context.system.type) t.selected = true;
+            });
+        }
         return context;
+    }
+
+    _getCharacteristicsOptions() {
+        return [
+            { value: "force", label: game.i18n.localize("ADAX-FS2.characteristics.corps.force") },
+            { value: "dexterite", label: game.i18n.localize("ADAX-FS2.characteristics.corps.dexterite") },
+            { value: "endurance", label: game.i18n.localize("ADAX-FS2.characteristics.corps.endurance") },
+            { value: "intelligence", label: game.i18n.localize("ADAX-FS2.characteristics.intellect.intelligence") },
+            { value: "perception", label: game.i18n.localize("ADAX-FS2.characteristics.intellect.perception") },
+            { value: "tech", label: game.i18n.localize("ADAX-FS2.characteristics.intellect.tech") },
+            { value: "extraverti", label: game.i18n.localize("ADAX-FS2.characteristics.esprit.extraverti") },
+            { value: "introverti", label: game.i18n.localize("ADAX-FS2.characteristics.esprit.introverti") },
+            { value: "passion", label: game.i18n.localize("ADAX-FS2.characteristics.esprit.passion") },
+            { value: "calme", label: game.i18n.localize("ADAX-FS2.characteristics.esprit.calme") },
+            { value: "foi", label: game.i18n.localize("ADAX-FS2.characteristics.esprit.foi") },
+            { value: "ego", label: game.i18n.localize("ADAX-FS2.characteristics.esprit.ego") },
+            { value: "", label: game.i18n.localize("ADAX-FS2.characteristics.none") }
+        ];
+    }
+
+    activateListeners(html) {
+        super.activateListeners(html);
+        html.find('.add-level').click(this._onAddLevel.bind(this));
+        html.find('.delete-level').click(this._onDeleteLevel.bind(this));
+    }
+
+    /**
+     * Surcharge pour sauvegarder les données du formulaire avant toute action.
+     */
+    async _onChangeInput(event) {
+        await super._onChangeInput(event);
+        // On sauvegarde immédiatement chaque changement.
+        this._onSubmit(event, { preventClose: true });
+    }
+    /**
+     * Gère l'ajout d'un nouveau niveau ou d'une nouvelle option.
+     * @param {Event} event
+     * @private
+     */
+    async _onAddLevel(event) {
+        event.preventDefault();
+        const dataType = event.currentTarget.dataset.type; // "levels" ou "options"
+
+        // 1. Lire les données plates du formulaire
+        const formData = this._getSubmitData();
+        const expandedData = foundry.utils.expandObject(formData);
+        
+        // 2. Transformer les données en un VRAI tableau, quel que soit le cas de figure
+        const dataObject = expandedData.system?.[dataType] || {};
+        const currentData = Array.isArray(dataObject) ? dataObject : Object.values(dataObject);
+
+        // 3. Ajouter la nouvelle ligne au tableau
+        currentData.push({ name: "Nouveau", cost: 0, description: "" });
+
+        // 4. Mettre à jour l'item avec le tableau complet et correct
+        await this.item.update({
+            [`system.${dataType}`]: currentData
+        });
+    }
+
+    /**
+     * Gère la suppression d'un niveau ou d'une option.
+     * @param {Event} event
+     * @private
+     */
+    async _onDeleteLevel(event) {
+        event.preventDefault();
+        const dataType = event.currentTarget.dataset.type;
+        const index = parseInt(event.currentTarget.dataset.index, 10);
+
+        // 1. Lire les données plates du formulaire
+        const formData = this._getSubmitData();
+        const expandedData = foundry.utils.expandObject(formData);
+
+        // 2. Transformer les données en un VRAI tableau
+        const dataObject = expandedData.system?.[dataType] || {};
+        const currentData = Array.isArray(dataObject) ? dataObject : Object.values(dataObject);
+        
+        // 3. Supprimer la ligne
+        if (index >= 0 && index < currentData.length) {
+            currentData.splice(index, 1);
+        }
+
+        // 4. Mettre à jour l'item avec le tableau modifié
+        await this.item.update({
+            [`system.${dataType}`]: currentData
+        });
     }
 }

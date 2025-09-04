@@ -132,10 +132,12 @@
         <li class="item" data-item-id="{{item._id}}">
             <div class="item-image">
                 {{#if item.system.icon}}<i class="{{item.system.icon}}" title="{{localize item.loc.name}}"></i>{{else}}<img src="{{item.img}}" title="{{localize item.loc.name}}" width="24" height="24"/>{{/if}}
-            </div>
-            <h4 class="item-name" title="{{localize item.loc.description}}">{{localize item.loc.name}}</h4>
+            </div>            
+            <h4 class="item-name" title="{{localize item.loc.description}}">
+                {{localize item.loc.name}}
+                <span class="item-description">({{localize item.loc.description}})</span>
+            </h4>
             <div class="item-controls">
-                <a class="item-control item-edit" title="Modifier"><i class="fas fa-edit"></i></a>
                 <a class="item-control item-delete" title="Supprimer"><i class="fas fa-trash"></i></a>
             </div>
         </li>
@@ -151,18 +153,48 @@
     <!-- SECTION : Atouts et Handicaps -->
     <h3>{{localize "ADAX-FS2.sheet.traits.beneficesAfflictions"}}</h3>
     <ul class="items-list-rich">
-        {{#each beneficesAfflictions as |item id|}}
-        <li class="item" data-item-id="{{item._id}}">
+    {{#each beneficesAfflictions as |item id|}}
+            
+<li class="item trait-item" data-item-id="{{item._id}}">
             <div class="item-image">
                 {{#if item.system.icon}}<i class="{{item.system.icon}}" title="{{localize item.loc.name}}"></i>{{else}}<img src="{{item.img}}" title="{{localize item.loc.name}}" width="24" height="24"/>{{/if}}
             </div>
-            <h4 class="item-name" title="{{localize item.loc.description}}">{{localize item.loc.name}}</h4>
+            <div class="item-summary">
+                <h4 class="item-name">{{localize item.loc.name}}</h4>
+                
+                <div class="item-description general">
+                    {{localize item.loc.description}}
+                </div>
+
+                {{#if item.system.hasLevels}}
+                <div class="item-description level">
+                    {{#each item.system.levels}}
+                        {{#if this.isActive}}
+                            <strong>{{localize this.name}}:</strong> {{localize this.description}}
+                        {{/if}}
+                    {{/each}}
+                </div>
+                {{/if}}
+                
+                {{#if item.system.hasOptions}}
+                <div class="item-options-list">
+                    {{#each item.system.options}}
+                        {{#if this.isActive}}
+                            <div class="option-line">
+                                <strong>+ {{localize this.name}}:</strong> {{localize this.description}}
+                            </div>
+                        {{/if}}
+                    {{/each}}
+                </div>
+                {{/if}}
+            </div>
             <div class="item-controls">
-                <a class="item-control item-edit" title="Modifier"><i class="fas fa-edit"></i></a>
                 <a class="item-control item-delete" title="Supprimer"><i class="fas fa-trash"></i></a>
             </div>
         </li>
-        {{/each}}
+
+  
+    {{/each}}
 
         {{#if (eq beneficesAfflictions.length 0)}}
         <li class="item-drop-helper">

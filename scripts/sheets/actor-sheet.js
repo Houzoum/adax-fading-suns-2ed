@@ -16,20 +16,31 @@ export class FadingSunsActorSheet extends foundry.appv1.sheets.ActorSheet {
   async getData(options) {
     const context = await super.getData(options);
 
-    // ... (la partie sur characteristicKeys reste la même)
-    context.characteristicKeys = { /* ... */ };
+    // Dictionnaire pour traduire les clés de caractéristiques (ex: "dexterite" -> "ADAX-FS2.characteristics.corps.dexterite")
+    context.characteristicKeys = {
+        "force": "ADAX-FS2.characteristics.corps.force",
+        "dexterite": "ADAX-FS2.characteristics.corps.dexterite",
+        "endurance": "ADAX-FS2.characteristics.corps.endurance",
+        "intelligence": "ADAX-FS2.characteristics.intellect.intelligence",
+        "perception": "ADAX-FS2.characteristics.intellect.perception",
+        "tech": "ADAX-FS2.characteristics.intellect.tech",
+        "extraverti": "ADAX-FS2.characteristics.esprit.extraverti",
+        "introverti": "ADAX-FS2.characteristics.esprit.introverti",
+        "passion": "ADAX-FS2.characteristics.esprit.passion",
+        "calme": "ADAX-FS2.characteristics.esprit.calme",
+        "foi": "ADAX-FS2.characteristics.esprit.foi",
+        "ego": "ADAX-FS2.characteristics.esprit.ego"
+    };
 
-    // Initialisation des listes pour tous nos types d'items
+    // Préparation des listes d'items triées pour le template
     context.learnedSkills = [];
     context.blessingsCurses = [];
     context.beneficesAfflictions = [];
 
-    // Boucle pour trier tous les items de l'acteur
+// Boucle pour trier tous les items de l'acteur
     for (const item of this.actor.items) {
-        // On crée la clé de traduction pour le nom et la description
-        // ex: "ADAX-FS2.items.blessings.some-blessing.name"
         const key = item.name.slugify({strict: true});
-        let itemTypeKey;
+        let itemTypeKey = 'unknown';
         if (item.type === 'competenceAcquise') itemTypeKey = 'skills';
         if (item.type === 'qualiteDefaut') itemTypeKey = 'blessings';
         if (item.type === 'atoutHandicap') itemTypeKey = 'benefices';
@@ -38,8 +49,26 @@ export class FadingSunsActorSheet extends foundry.appv1.sheets.ActorSheet {
             name: `ADAX-FS2.items.${itemTypeKey}.${key}.name`,
             description: `ADAX-FS2.items.${itemTypeKey}.${key}.description`
         };
+        
+        if (item.type === 'atoutHandicap') {
+            let details = [];
+            // CORRECTION ICI : On vérifie que .levels est bien un tableau avant de l'utiliser
+            const levels = Array.isArray(item.system.levels) ? item.system.levels : [];
+            const activeLevel = levels.find(l => l.isActive);
+            if (activeLevel) {
+                details.push(activeLevel.name);
+            }
 
-        // On trie l'item dans la bonne liste
+            // CORRECTION ICI : Même vérification pour .options
+            const options = Array.isArray(item.system.options) ? item.system.options : [];
+            const activeOptions = options.filter(o => o.isActive);
+            activeOptions.forEach(opt => {
+                details.push(opt.name);
+            });
+            
+            item.displayDetails = details.join(', ');
+        }
+
         if (item.type === "competenceAcquise") {
             context.learnedSkills.push(item);
         } else if (item.type === "qualiteDefaut") {
@@ -48,6 +77,7 @@ export class FadingSunsActorSheet extends foundry.appv1.sheets.ActorSheet {
             context.beneficesAfflictions.push(item);
         }
     }
+    
 
     return context;
   }
@@ -57,6 +87,7 @@ export class FadingSunsActorSheet extends foundry.appv1.sheets.ActorSheet {
     html.find('.rollable-skill').click(this._onSkillRollDialog.bind(this));
     html.find('.rollable-item-skill').click(this._onSkillRollDialog.bind(this));
     html.find('.item-edit').click(this._onItemEdit.bind(this));
+    html.find('.item-delete').click(this._onItemDeleteFromSheet.bind(this));
   }
 
   async _updateObject(event, formData) {
@@ -88,13 +119,19 @@ export class FadingSunsActorSheet extends foundry.appv1.sheets.ActorSheet {
     if (!this.isEditable) return false;
 
     const item = await Item.fromDropData(data);
-    const itemData = item.toObject();
+    const itemData = item.toObject(); // On convertit l'item en données brutes
 
-    // Logique personnalisée ici
-    console.log("Item déposé :", itemData.name, "de type", itemData.type);
+    // SI c'est un Atout/Handicap complexe, on ouvre la fenêtre de configuration
+    if (itemData.type === 'atoutHandicap' && (itemData.system.hasLevels || itemData.system.hasOptions)) {
+        
+        // On passe les données de l'item à une nouvelle fonction qui gérera la fenêtre
+        this._openTraitConfigurationDialog(itemData);
 
-    // On laisse Foundry gérer la création de l'item sur l'acteur
-    return super._onDropItem(event, data);
+    } else {
+        // SINON (pour tous les autres types d'items, ou les atouts simples)
+        // On utilise la méthode de création directe
+        return this.actor.createEmbeddedDocuments("Item", [itemData]);
+    }
   }
   // --- GESTIONNAIRES D'ÉVÉNEMENTS ---
 
@@ -144,21 +181,52 @@ export class FadingSunsActorSheet extends foundry.appv1.sheets.ActorSheet {
                 icon: '<i class="fas fa-trash"></i>',
                 label: game.i18n.localize("ADAX-FS2.dialog.manage.deleteButton"),
                 callback: () => {
-                    this._onItemDeleteConfirm(itemId);
+                    // Ferme la fenêtre d'édition
+                    const activeDialog = Object.values(ui.windows).find(w => w.title.includes(game.i18n.localize("ADAX-FS2.dialog.manage.title")));
+                    if (activeDialog) activeDialog.close();
+                    
+                    // Appelle la fonction de suppression centrale avec l'ID
+                    this._onItemDelete(item.id);
                 }
             }
         },
         default: "update"
     }).render(true);
   }
-
-  async _onItemDeleteConfirm(itemId) {
+  /**
+   * Porte d'entrée pour la suppression depuis un clic sur la fiche.
+   * Récupère l'ID de l'item et appelle la fonction de suppression.
+   */
+  _onItemDeleteFromSheet(event) {
+    event.preventDefault();
+    const element = event.currentTarget;
+    const itemId = element.closest(".item").dataset.itemId;
+    this._onItemDelete(itemId);
+  }
+  /**
+   * Gère la suppression d'un item après confirmation.
+   * Prend un ID d'item en argument.
+   * @param {string} itemId L'ID de l'item à supprimer.
+   */
+  async _onItemDelete(itemId) {
     const item = this.actor.items.get(itemId);
     if (!item) return;
-  
+
+    // Prépare le nom localisé de l'item
+    let itemName = item.name;
+    const key = item.name.slugify({strict: true});
+    let itemTypeKey = 'unknown';
+    if (item.type === 'competenceAcquise') itemTypeKey = 'skills';
+    if (item.type === 'qualiteDefaut') itemTypeKey = 'blessings';
+    if (item.type === 'atoutHandicap') itemTypeKey = 'benefices';
+    const locKey = `ADAX-FS2.items.${itemTypeKey}.${key}.name`;
+    if (game.i18n.has(locKey)) {
+        itemName = game.i18n.localize(locKey);
+    }
+
     const title = game.i18n.localize("ADAX-FS2.dialog.delete.title");
-    const content = `<p>${game.i18n.format("ADAX-FS2.dialog.delete.content", {name: game.i18n.localize(item.loc.name)})}</p>`;
-  
+    const content = `<p>${game.i18n.format("ADAX-FS2.dialog.delete.content", {name: itemName})}</p>`;
+
     const confirmed = await Dialog.confirm({
         title: title,
         content: content,
@@ -166,11 +234,12 @@ export class FadingSunsActorSheet extends foundry.appv1.sheets.ActorSheet {
         no: () => false,
         defaultYes: false
     });
-  
+
     if (confirmed) {
         this.actor.deleteEmbeddedDocuments("Item", [itemId]);
     }
   }
+
   async _onSkillRollDialog(event) {
     event.preventDefault();
     const element = event.currentTarget;
@@ -343,5 +412,60 @@ export class FadingSunsActorSheet extends foundry.appv1.sheets.ActorSheet {
     if (rollResult <= 17) return 5;
     if (rollResult >= 18) return 6;
     return 0;
+  }
+
+  async _openTraitConfigurationDialog(itemData) {
+    const templatePath = "systems/adax-fading-suns-2ed/templates/dialogs/configure-trait-dialog.html";
+    
+    const templateData = foundry.utils.deepClone(itemData.system);
+    if (!Array.isArray(templateData.levels)) templateData.levels = Object.values(templateData.levels || {});
+    if (!Array.isArray(templateData.options)) templateData.options = Object.values(templateData.options || {});
+
+    // On pré-coche le premier niveau par défaut si aucun n'est actif
+    if (templateData.hasLevels && templateData.levels.length > 0) {
+        if (!templateData.levels.some(l => l.isActive)) {
+            templateData.levels[0].isActive = true;
+        }
+    }
+
+    const content = await foundry.applications.handlebars.renderTemplate(templatePath, templateData);
+
+    new Dialog({
+        title: `Configurer : ${itemData.name}`,
+        content: content,
+        buttons: {
+            add: {
+                icon: '<i class="fas fa-check"></i>',
+                label: "Ajouter",
+                callback: (html) => {
+                    const form = html[0].querySelector("form");
+                    
+                    // On repart des données originales de l'item
+                    const finalItemData = foundry.utils.deepClone(itemData);
+
+                    // CORRECTION CLÉ : On s'assure que les tableaux existent et on initialise isActive
+                    if (finalItemData.system.hasLevels) {
+                        if (!Array.isArray(finalItemData.system.levels)) finalItemData.system.levels = Object.values(finalItemData.system.levels || {});
+                        const levelIndex = form.querySelector('input[name="level"]:checked')?.value;
+                        finalItemData.system.levels.forEach((lvl, idx) => {
+                            // On met isActive à true pour le choix, et false pour les autres
+                            lvl.isActive = (idx == levelIndex);
+                        });
+                    }
+
+                    if (finalItemData.system.hasOptions) {
+                        if (!Array.isArray(finalItemData.system.options)) finalItemData.system.options = Object.values(finalItemData.system.options || {});
+                        finalItemData.system.options.forEach((opt, index) => {
+                            const checkbox = form.querySelector(`input[name="option-${index}"]`);
+                            opt.isActive = checkbox ? checkbox.checked : false;
+                        });
+                    }
+                    
+                    this.actor.createEmbeddedDocuments("Item", [finalItemData]);
+                }
+            }
+        },
+        default: "add"
+    }).render(true);
   }
 }

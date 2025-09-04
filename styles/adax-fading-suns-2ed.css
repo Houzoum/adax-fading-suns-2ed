@@ -180,6 +180,14 @@
     color: #555;
     text-transform: capitalize;
 }
+
+.fadingsuns .item-description {
+    font-style: italic;
+    font-weight: normal; /* S'assure que le texte n'est pas en gras */
+    font-size: 0.9em; /* Légèrement plus petit que le nom */
+    color: #444; /* Un gris foncé pour un bon contraste mais moins fort que le noir */
+    margin-left: 8px; /* Un peu d'espace après le nom */
+}
 .fadingsuns .specialization-input {
     display: inline-block; /* Permet de définir une largeur minimale */
     min-width: 80px; /* Garde une taille minimale pour cliquer dessus */
@@ -221,4 +229,150 @@
 }
 .fadingsuns .skill-row > .rollable-skill {
     margin-right: 8px; /* Ajoute de l'espace à droite du dé */
+}
+/* Style pour la gestion des niveaux/options dans la fiche d'item */
+.fadingsuns .flex-group-center {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    gap: 10px;
+}
+.fadingsuns .flex-group-center h4 {
+    margin: 0;
+}
+.fadingsuns .levels-list {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    margin-top: 5px;
+}
+.fadingsuns .level-row {
+    display: grid;
+    grid-template-columns: 1fr 60px 2fr 30px;
+    gap: 5px;
+    align-items: center;
+}
+.fadingsuns .level-row.header {
+    font-weight: bold;
+    border-bottom: 1px solid #ccc;
+    padding-bottom: 3px;
+}
+.fadingsuns .level-row input[type="number"] {
+    width: 100%;
+}
+.fadingsuns .add-level {
+    margin-top: 5px;
+    text-align: right;
+}
+/* --- Style pour les fenêtres de dialogue de configuration --- */
+
+.dialog .configuration-section {
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    padding: 10px;
+    margin-bottom: 10px;
+    background: rgba(0, 0, 0, 0.02);
+}
+
+.dialog .configuration-section h4 {
+    margin: 0 0 10px 0;
+    padding-bottom: 5px;
+    border-bottom: 1px solid #ccc;
+    font-family: "Modesto Condensed", "Palatino Linotype", serif;
+    font-size: 1.2em;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.dialog .levels,
+.dialog .options {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.dialog .level-option,
+.dialog .option-choice {
+    display: flex;
+    align-items: flex-start; /* Aligne sur le haut pour les descriptions longues */
+    gap: 8px;
+    padding: 5px;
+    border-radius: 3px;
+    transition: background-color 0.2s;
+}
+
+/* Effet de survol pour une meilleure interactivité */
+.dialog .level-option:hover,
+.dialog .option-choice:hover {
+    background-color: rgba(0, 0, 0, 0.05);
+}
+
+.dialog .level-option input,
+.dialog .option-choice input {
+    margin-top: 0.2em; /* Aligne mieux la case avec la première ligne de texte */
+}
+
+.dialog .level-option label,
+.dialog .option-choice label {
+    flex-grow: 1;
+}
+
+.dialog .level-option label strong,
+.dialog .option-choice label strong {
+    color: #440000; /* Un rouge sombre pour le nom et le coût */
+}
+/* --- Style pour l'affichage des Traits complexes --- */
+
+.fadingsuns .trait-item {
+    align-items: flex-start;
+    padding: 5px 0;
+}
+
+.fadingsuns .item-summary {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    margin-left: 8px;
+}
+
+.fadingsuns .item-summary .item-name {
+    margin-bottom: 3px;
+}
+
+/* Style pour TOUTES les descriptions pour统一性 */
+.fadingsuns .item-summary .item-description {
+    font-size: 0.9em;
+    color: #333;
+}
+
+/* Style spécifique pour la description générale */
+.fadingsuns .item-summary .item-description.general {
+    font-style: italic;
+    color: #555;
+    margin-bottom: 5px;
+}
+
+/* Style spécifique pour la description du niveau */
+.fadingsuns .item-summary .item-description.level {
+    padding-left: 10px;
+    border-left: 2px solid #ccc;
+    margin-bottom: 5px;
+}
+
+/* Conteneur pour la liste des options */
+.fadingsuns .item-summary .item-options-list {
+    display: flex;
+    flex-direction: column; /* Force les options à s'empiler */
+    gap: 3px; /* Espace entre les options */
+    font-size: 0.9em;
+    padding-left: 20px; /* Indentation plus forte */
+    border-left: 2px solid #ddd;
+}
+
+.fadingsuns .item-summary .option-line {
+    color: #444;
+}
+
+.fadingsuns .item-summary .option-line strong {
+    color: #440000;
 }
