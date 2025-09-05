@@ -60,6 +60,12 @@
       "label": "ADAX-FS2.compendium.equipment.armors.label",
       "path": "packs/armures",
       "type": "Item"
+    },
+    {
+      "name": "manoeuvres-combat",
+      "label": "ADAX-FS2.compendium.maneuvers.label",
+      "path": "packs/manoeuvres-combat",
+      "type": "Item"
     }
   ],
   "url": "",

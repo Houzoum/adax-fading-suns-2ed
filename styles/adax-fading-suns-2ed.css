@@ -424,3 +424,85 @@
     grid-column: 7; /* Les contrôles occupent la dernière colonne */
     justify-self: end;
 }
+/* --- Style pour les fiches d'item --- */
+
+/* Conteneur principal de la fiche */
+.fadingsuns.sheet.item .window-content {
+    background: #f3f2ed; /* Fond parchemin cohérent */
+}
+
+/* Règle générale pour tous les groupes de formulaire dans la fiche item */
+.fadingsuns .item-sheet .form-group {
+    display: flex;
+    flex-direction: column; /* FORCE le label à être au-dessus du champ */
+    padding: 3px 0;
+}
+
+.fadingsuns .item-sheet .form-group label {
+    font-weight: bold;
+    font-size: 0.9em;
+    text-transform: uppercase;
+    color: #660000; /* Rouge sombre thématique */
+    margin-bottom: 2px;
+}
+
+/* Style de la grille */
+.fadingsuns .item-sheet .grid {
+    display: grid;
+    gap: 5px 10px;
+    align-items: end;
+    border-bottom: 1px solid #ddd;
+    padding-bottom: 8px;
+    margin-bottom: 8px;
+}
+
+.fadingsuns .item-sheet .grid-2col { grid-template-columns: repeat(2, 1fr); }
+.fadingsuns .item-sheet .grid-3col { grid-template-columns: repeat(3, 1fr); }
+.fadingsuns .item-sheet .grid-4col { grid-template-columns: repeat(4, 1fr); }
+
+/* Style pour les zones de texte */
+.fadingsuns .item-sheet textarea {
+    min-height: 80px;
+    resize: vertical;
+}
+
+/* En-tête des listes de niveaux/options */
+.fadingsuns .item-sheet .levels-list .header {
+    border-bottom: 1px solid #999;
+    padding-bottom: 5px;
+    margin-bottom: 5px;
+    font-weight: bold;
+    color: #660000;
+}
+/* --- Style pour la section Manoeuvres --- */
+.fadingsuns .maneuvers-list .item {
+    display: grid;
+    grid-template-columns: 24px 3fr 2fr 30px; /* Icône, Résumé, Stats, Contrôles */
+    gap: 10px;
+    align-items: center;
+}
+
+.fadingsuns .maneuver-stats {
+    display: flex;
+    justify-content: space-around;
+    font-size: 0.9em;
+    text-align: center;
+    background: rgba(0,0,0,0.05);
+    border-radius: 5px;
+    padding: 2px;
+}
+/* --- Style pour les listes pliables --- */
+.fadingsuns .collapsible-header {
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.fadingsuns .collapsible-header:hover {
+    background: rgba(0, 0, 0, 0.05);
+}
+
+.fadingsuns .collapsible-header i {
+    margin-right: 8px;
+    width: 10px; /* Pour un alignement parfait */
+    text-align: center;
+}

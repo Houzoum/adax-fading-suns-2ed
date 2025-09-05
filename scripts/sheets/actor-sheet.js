@@ -38,6 +38,8 @@ export class FadingSunsActorSheet extends foundry.appv1.sheets.ActorSheet {
     context.beneficesAfflictions = [];
     context.weapons = [];
     context.armors = [];
+    context.maneuvers = [];
+    context.groupedManeuvers = {};
 
 // Boucle pour trier tous les items de l'acteur
     for (const item of this.actor.items) {
@@ -46,8 +48,9 @@ export class FadingSunsActorSheet extends foundry.appv1.sheets.ActorSheet {
         if (item.type === 'competenceAcquise') itemTypeKey = 'skills';
         else if (item.type === 'qualiteDefaut') itemTypeKey = 'blessings';
         else if (item.type === 'atoutHandicap') itemTypeKey = 'benefices';
-        else if (item.type === 'arme') itemTypeKey = 'weapons'; // NOUVELLE LIGNE
-        else if (item.type === 'armure') itemTypeKey = 'armors'; // NOUVELLE LIGNE
+        else if (item.type === 'arme') itemTypeKey = 'weapons';
+        else if (item.type === 'armure') itemTypeKey = 'armors';
+        else if (item.type === 'manoeuvre') itemTypeKey = 'maneuvers';
 
         item.loc = {
             name: `ADAX-FS2.items.${itemTypeKey}.${key}.name`,
@@ -84,6 +87,16 @@ export class FadingSunsActorSheet extends foundry.appv1.sheets.ActorSheet {
         } else if (item.type === "armure") {
             context.armors.push(item);
         }
+        else if (item.type === "manoeuvre") {
+            const maneuverType = item.system.typeManoeuvre;
+            if (!context.groupedManeuvers[maneuverType]) {
+                context.groupedManeuvers[maneuverType] = {
+                    label: game.i18n.localize(`ADAX-FS2.itemSheet.maneuverTypes.${maneuverType}`),
+                    maneuvers: []
+                };
+            }
+            context.groupedManeuvers[maneuverType].maneuvers.push(item);
+        }
     }
     
 
@@ -97,6 +110,13 @@ export class FadingSunsActorSheet extends foundry.appv1.sheets.ActorSheet {
     html.find('.item-edit').click(this._onItemEdit.bind(this));
     html.find('.item-delete').click(this._onItemDeleteFromSheet.bind(this));
     html.find('.item-summary.clickable').click(this._onItemSummaryClick.bind(this));
+    // --- GESTION DES LISTES PLIABLES ---
+    html.find('.collapsible-header').click(event => {
+        const header = $(event.currentTarget);
+        const content = header.next('.collapsible-content');    
+        content.slideToggle(200); // Animation de dépliage/repliage
+        header.find('i').toggleClass('fa-chevron-down fa-chevron-right');
+    });
   }
 
   async _updateObject(event, formData) {

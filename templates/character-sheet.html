@@ -96,14 +96,14 @@
     </div>
     
     <!-- SECTION : Compétences Acquises -->
-    <h3>{{localize "ADAX-FS2.sheet.skills.learned"}}</h3>
-    <ul class="items-list-rich">
+    <h3 class="collapsible-header"><i class="fas fa-chevron-right"></i> {{localize "ADAX-FS2.sheet.skills.learned"}}</h3>
+    <ul class="items-list-rich collapsible-content" style="display: none;">
         {{#each learnedSkills as |item id|}}
         <li class="item" data-item-id="{{item._id}}">
             <div class="item-image">
                 {{#if item.system.icon}}<i class="{{item.system.icon}}" title="{{localize item.loc.name}}"></i>{{else}}<img src="{{item.img}}" title="{{localize item.loc.name}}" width="24" height="24"/>{{/if}}
             </div>
-            <a class="rollable-item-skill" title="Lancer {{localize item.loc.name}}"><i class="fas fa-dice-d20"></i></a>
+            <a class="rollable-item-skill" title="{{localize 'ADAX-FS2.sheet.roll.title'}} {{localize item.loc.name}}"><i class="fas fa-dice-d20"></i></a>
             <h4 class="item-name" title="{{localize item.loc.description}}">
                 {{localize item.loc.name}}
                 {{#if item.system.hasSpecialization}}
@@ -126,23 +126,24 @@
     </ul>
 
     <!-- SECTION : Qualités et Défauts -->
-    <h3>{{localize "ADAX-FS2.sheet.traits.blessingsCurses"}}</h3>
-    <ul class="items-list-rich">
+    <h3 class="collapsible-header"><i class="fas fa-chevron-right"></i> {{localize "ADAX-FS2.sheet.traits.blessingsCurses"}}</h3>
+    <ul class="items-list-rich collapsible-content" style="display: none;">
         {{#each blessingsCurses as |item id|}}
-        <li class="item" data-item-id="{{item._id}}">
+        <li class="item trait-item" data-item-id="{{item._id}}">
             <div class="item-image">
                 {{#if item.system.icon}}<i class="{{item.system.icon}}" title="{{localize item.loc.name}}"></i>{{else}}<img src="{{item.img}}" title="{{localize item.loc.name}}" width="24" height="24"/>{{/if}}
-            </div>            
-            <h4 class="item-name" title="{{localize item.loc.description}}">
-                {{localize item.loc.name}}
-                <span class="item-description">({{localize item.loc.description}})</span>
-            </h4>
+            </div>
+            <div class="item-summary">
+                <h4 class="item-name">{{localize item.loc.name}}</h4>
+                <div class="item-description general">
+                    {{localize item.loc.description}}
+                </div>
+            </div>
             <div class="item-controls">
-                <a class="item-control item-delete" title="Supprimer"><i class="fas fa-trash"></i></a>
+                <a class="item-control item-delete" title="{{localize 'ADAX-FS2.sheet.items.delete'}}"><i class="fas fa-trash"></i></a>
             </div>
         </li>
         {{/each}}
-        
         {{#if (eq blessingsCurses.length 0)}}
         <li class="item-drop-helper">
             {{localize "ADAX-FS2.sheet.traits.drophelper"}}
@@ -151,67 +152,81 @@
     </ul>
 
     <!-- SECTION : Atouts et Handicaps -->
-    <h3>{{localize "ADAX-FS2.sheet.traits.beneficesAfflictions"}}</h3>
-    <ul class="items-list-rich">
-    {{#each beneficesAfflictions as |item id|}}
-            
-<li class="item trait-item" data-item-id="{{item._id}}">
+    <h3 class="collapsible-header"><i class="fas fa-chevron-right"></i> {{localize "ADAX-FS2.sheet.traits.beneficesAfflictions"}}</h3>
+    <ul class="items-list-rich collapsible-content" style="display: none;">
+        {{#each beneficesAfflictions as |item id|}}
+        <li class="item trait-item" data-item-id="{{item._id}}">
             <div class="item-image">
                 {{#if item.system.icon}}<i class="{{item.system.icon}}" title="{{localize item.loc.name}}"></i>{{else}}<img src="{{item.img}}" title="{{localize item.loc.name}}" width="24" height="24"/>{{/if}}
             </div>
             <div class="item-summary">
                 <h4 class="item-name">{{localize item.loc.name}}</h4>
-                
                 <div class="item-description general">
                     {{localize item.loc.description}}
                 </div>
-
                 {{#if item.system.hasLevels}}
                 <div class="item-description level">
-                    {{#each item.system.levels}}
-                        {{#if this.isActive}}
-                            <strong>{{localize this.name}}:</strong> {{localize this.description}}
-                        {{/if}}
-                    {{/each}}
+                    {{#each item.system.levels}}{{#if this.isActive}}<strong>{{localize this.name}}:</strong> {{localize this.description}}{{/if}}{{/each}}
                 </div>
                 {{/if}}
-                
                 {{#if item.system.hasOptions}}
                 <div class="item-options-list">
-                    {{#each item.system.options}}
-                        {{#if this.isActive}}
-                            <div class="option-line">
-                                <strong>+ {{localize this.name}}:</strong> {{localize this.description}}
-                            </div>
-                        {{/if}}
-                    {{/each}}
+                    {{#each item.system.options}}{{#if this.isActive}}<div class="option-line"><strong>+ {{localize this.name}}:</strong> {{localize this.description}}</div>{{/if}}{{/each}}
                 </div>
                 {{/if}}
             </div>
             <div class="item-controls">
-                <a class="item-control item-delete" title="Supprimer"><i class="fas fa-trash"></i></a>
+                <a class="item-control item-edit" title="Modifier"><i class="fas fa-edit"></i></a>
+                <a class="item-control item-delete" title="{{localize 'ADAX-FS2.sheet.items.delete'}}"><i class="fas fa-trash"></i></a>
             </div>
         </li>
-
-  
-    {{/each}}
-
+        {{/each}}
         {{#if (eq beneficesAfflictions.length 0)}}
         <li class="item-drop-helper">
             {{localize "ADAX-FS2.sheet.traits.drophelper"}}
         </li>
         {{/if}}
     </ul>
+    
+<!-- SECTION : MANOEUVRES DE COMBAT -->
+    <h3>{{localize "ADAX-FS2.compendium.maneuvers.label"}}</h3>
+    <div class="maneuvers-container">
+        {{#each groupedManeuvers as |group type|}}
+        <h4 class="collapsible-header sub-header"><i class="fas fa-chevron-right"></i> {{group.label}}</h4>
+        <ul class="items-list-rich maneuvers-list collapsible-content" style="display: none;">
+            {{#each group.maneuvers as |item id|}}
+            <li class="item" data-item-id="{{item._id}}">
+                <div class="item-image">
+                    <i class="{{item.system.icon}}" title="{{localize item.loc.name}}"></i>
+                </div>
+                <div class="item-summary clickable" data-item-id="{{item._id}}">
+                    <h4 class="item-name">{{localize item.loc.name}}</h4>
+                    <div class="item-description">
+                        ({{localize "ADAX-FS2.sheet.maneuvers.levelShort"}}: {{item.system.levelRequis}} {{localize (lookup ../../characteristicKeys item.system.caracteristique)}} + {{localize (lookup ../../config.maneuverSkills item.system.competence)}})
+                    </div>
+                </div>
+                <div class="maneuver-stats">
+                    <span>{{localize "ADAX-FS2.sheet.maneuvers.initShort"}}: {{item.system.init}}</span>
+                    <span>{{localize "ADAX-FS2.sheet.maneuvers.goalShort"}}: {{item.system.goal}}</span>
+                    <span>{{localize "ADAX-FS2.sheet.maneuvers.dmgShort"}}: {{item.system.dmg}}</span>
+                </div>
+                <div class="item-controls">
+                    <a class="item-control item-delete" title="{{localize 'ADAX-FS2.sheet.items.delete'}}"><i class="fas fa-trash"></i></a>
+                </div>
+            </li>
+            {{/each}}
+        </ul>
+        {{/each}}
+    </div>
 
+  
 
-<!-- ====================================================================== -->
-    <!-- SECTION : INVENTAIRE                                                   -->
-    <!-- ====================================================================== -->
+    <!-- SECTION : INVENTAIRE -->
     <h2>{{localize "ADAX-FS2.sheet.inventory.title"}}</h2>
 
     <!-- Sous-section Armes -->
-    <h3>{{localize "ADAX-FS2.compendium.equipment.weapons.label"}}</h3>
-    <ul class="items-list-rich inventory-list">
+    <h3 class="collapsible-header"><i class="fas fa-chevron-right"></i> {{localize "ADAX-FS2.compendium.equipment.weapons.label"}}</h3>
+    <ul class="items-list-rich inventory-list collapsible-content" style="display: none;">
         {{#each weapons as |item id|}}
         <li class="item" data-item-id="{{item._id}}">
             <div class="item-image">
@@ -220,10 +235,8 @@
             <div class="item-summary clickable" data-item-id="{{item._id}}">
                 <h4 class="item-name">{{localize item.loc.name}}</h4>
                 <div class="item-description">
-                    <!-- Si Arme à Distance -->
                     {{#if (or (eq item.system.typeArme 'thrown') (eq item.system.typeArme 'bow') (eq item.system.typeArme 'crossbow') (eq item.system.typeArme 'slug-gun') (eq item.system.typeArme 'energy-gun') (eq item.system.typeArme 'heavy'))}}
                         ({{localize "ADAX-FS2.sheet.inventory.dmg"}}: {{item.system.dmg}}d6, {{localize "ADAX-FS2.sheet.inventory.range"}}: {{item.system.rngShort}}/{{item.system.rngLong}}, {{localize "ADAX-FS2.sheet.inventory.shots"}}: {{item.system.shots}})
-                    <!-- Si Arme de Mêlée -->
                     {{else}}
                         ({{localize "ADAX-FS2.sheet.inventory.dmg"}}: {{item.system.dmg}}d6, {{localize "ADAX-FS2.sheet.inventory.strReq"}}: {{item.system.str}})
                     {{/if}}
@@ -242,8 +255,8 @@
     </ul>
 
     <!-- Sous-section Armures -->
-    <h3>{{localize "ADAX-FS2.compendium.equipment.armors.label"}}</h3>
-    <ul class="items-list-rich inventory-list">
+    <h3 class="collapsible-header"><i class="fas fa-chevron-right"></i> {{localize "ADAX-FS2.compendium.equipment.armors.label"}}</h3>
+    <ul class="items-list-rich inventory-list collapsible-content" style="display: none;">
         {{#each armors as |item id|}}
         <li class="item" data-item-id="{{item._id}}">
             <div class="item-image">
