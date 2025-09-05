@@ -50,6 +50,7 @@
     "types": [
       "competenceAcquise", 
       "arme",
+      "armure",
       "qualiteDefaut",
       "atoutHandicap"
     ],
@@ -79,10 +80,31 @@
       "icon": "fas fa-plus-circle"
     },
     "arme": {
-      "description": "",
-      "damage": "",
-      "range": "",
-      "icon": "fas fa-question-circle"
+      "typeArme": "melee",
+      "competence": "melee",
+      "init": 0,
+      "goal": 0,
+      "dmg": 1,
+      "str": 0,
+      "rngShort": 0,
+      "rngLong": 0,
+      "rate": "1",
+      "shots": 0,
+      "siz": "M",
+      "cost": 0,
+      "notes": "",
+      "icon": "fas fa-gavel"
+    },
+    
+    "armure": {
+      "typeArmure": "corporelle",
+      "defense": 1,
+      "str": 0,
+      "dex": 0,
+      "vigor": 0,
+      "cost": 0,
+      "notes": "",
+      "icon": "fas fa-shield-alt"
     }
   }
 }

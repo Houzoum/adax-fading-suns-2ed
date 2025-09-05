@@ -36,14 +36,18 @@ export class FadingSunsActorSheet extends foundry.appv1.sheets.ActorSheet {
     context.learnedSkills = [];
     context.blessingsCurses = [];
     context.beneficesAfflictions = [];
+    context.weapons = [];
+    context.armors = [];
 
 // Boucle pour trier tous les items de l'acteur
     for (const item of this.actor.items) {
         const key = item.name.slugify({strict: true});
         let itemTypeKey = 'unknown';
         if (item.type === 'competenceAcquise') itemTypeKey = 'skills';
-        if (item.type === 'qualiteDefaut') itemTypeKey = 'blessings';
-        if (item.type === 'atoutHandicap') itemTypeKey = 'benefices';
+        else if (item.type === 'qualiteDefaut') itemTypeKey = 'blessings';
+        else if (item.type === 'atoutHandicap') itemTypeKey = 'benefices';
+        else if (item.type === 'arme') itemTypeKey = 'weapons'; // NOUVELLE LIGNE
+        else if (item.type === 'armure') itemTypeKey = 'armors'; // NOUVELLE LIGNE
 
         item.loc = {
             name: `ADAX-FS2.items.${itemTypeKey}.${key}.name`,
@@ -75,6 +79,10 @@ export class FadingSunsActorSheet extends foundry.appv1.sheets.ActorSheet {
             context.blessingsCurses.push(item);
         } else if (item.type === "atoutHandicap") {
             context.beneficesAfflictions.push(item);
+        } else if (item.type === "arme") { 
+            context.weapons.push(item);
+        } else if (item.type === "armure") {
+            context.armors.push(item);
         }
     }
     
@@ -88,6 +96,7 @@ export class FadingSunsActorSheet extends foundry.appv1.sheets.ActorSheet {
     html.find('.rollable-item-skill').click(this._onSkillRollDialog.bind(this));
     html.find('.item-edit').click(this._onItemEdit.bind(this));
     html.find('.item-delete').click(this._onItemDeleteFromSheet.bind(this));
+    html.find('.item-summary.clickable').click(this._onItemSummaryClick.bind(this));
   }
 
   async _updateObject(event, formData) {
@@ -192,6 +201,20 @@ export class FadingSunsActorSheet extends foundry.appv1.sheets.ActorSheet {
         },
         default: "update"
     }).render(true);
+  }
+
+  /**
+   * Gère le clic sur le résumé d'un item pour ouvrir sa fiche.
+   * @param {Event} event
+   */
+  _onItemSummaryClick(event) {
+    event.preventDefault();
+    const element = event.currentTarget;
+    const itemId = element.dataset.itemId;
+    const item = this.actor.items.get(itemId);
+    if (item) {
+        item.sheet.render(true);
+    }
   }
   /**
    * Porte d'entrée pour la suppression depuis un clic sur la fiche.

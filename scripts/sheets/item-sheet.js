@@ -3,7 +3,7 @@ export class FadingSunsItemSheet extends foundry.appv1.sheets.ItemSheet {
     static get defaultOptions() {
         return foundry.utils.mergeObject(super.defaultOptions, {
             classes: ["fadingsuns", "sheet", "item"],
-            width: 520,
+            width: 650,
             height: 480,
             template: "systems/adax-fading-suns-2ed/templates/item-sheet.html"
         });
@@ -21,7 +21,35 @@ export class FadingSunsItemSheet extends foundry.appv1.sheets.ItemSheet {
             beneficeOrAffliction: [
                 { value: "atout", label: game.i18n.localize("ADAX-FS2.itemSheet.benefice") },
                 { value: "handicap", label: game.i18n.localize("ADAX-FS2.itemSheet.affliction") }
-            ]
+            ],
+           weaponTypes: {
+                "melee": game.i18n.localize("ADAX-FS2.itemSheet.weaponTypes.melee"),
+                "thrown": game.i18n.localize("ADAX-FS2.itemSheet.weaponTypes.thrown"),
+                "bow": game.i18n.localize("ADAX-FS2.itemSheet.weaponTypes.bow"),
+                "crossbow": game.i18n.localize("ADAX-FS2.itemSheet.weaponTypes.crossbow"),
+                "slug-gun": game.i18n.localize("ADAX-FS2.itemSheet.weaponTypes.slug-gun"),
+                "energy-gun": game.i18n.localize("ADAX-FS2.itemSheet.weaponTypes.energy-gun"),
+                "heavy": game.i18n.localize("ADAX-FS2.itemSheet.weaponTypes.heavy")
+            },
+            weaponSkills: {
+                "melee": game.i18n.localize("ADAX-FS2.skills.innate.melee"),
+                "throwing": game.i18n.localize("ADAX-FS2.items.skills.throwing.name"),
+                "archery": game.i18n.localize("ADAX-FS2.items.skills.archery.name"),
+                "shoot": game.i18n.localize("ADAX-FS2.skills.innate.tir"),
+                "vigor": game.i18n.localize("ADAX-FS2.skills.innate.vigueur")
+            },
+            itemSizes: {
+                "XS": game.i18n.localize("ADAX-FS2.itemSheet.itemSizes.XS"),
+                "S": game.i18n.localize("ADAX-FS2.itemSheet.itemSizes.S"),
+                "M": game.i18n.localize("ADAX-FS2.itemSheet.itemSizes.M"),
+                "L": game.i18n.localize("ADAX-FS2.itemSheet.itemSizes.L"),
+                "XL": game.i18n.localize("ADAX-FS2.itemSheet.itemSizes.XL")
+            },
+            armorTypes: {
+                "corporelle": game.i18n.localize("ADAX-FS2.itemSheet.armorTypes.corporelle"),
+                "bouclier": game.i18n.localize("ADAX-FS2.itemSheet.armorTypes.bouclier"),
+                "champ-force": game.i18n.localize("ADAX-FS2.itemSheet.armorTypes.champ-force")
+            }
         };
         context.config.characteristics.forEach(c => {
             if (c.value === context.system.characteristic) c.selected = true;

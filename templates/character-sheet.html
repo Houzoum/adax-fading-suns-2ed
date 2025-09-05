@@ -202,5 +202,71 @@
         </li>
         {{/if}}
     </ul>
+
+
+<!-- ====================================================================== -->
+    <!-- SECTION : INVENTAIRE                                                   -->
+    <!-- ====================================================================== -->
+    <h2>{{localize "ADAX-FS2.sheet.inventory.title"}}</h2>
+
+    <!-- Sous-section Armes -->
+    <h3>{{localize "ADAX-FS2.compendium.equipment.weapons.label"}}</h3>
+    <ul class="items-list-rich inventory-list">
+        {{#each weapons as |item id|}}
+        <li class="item" data-item-id="{{item._id}}">
+            <div class="item-image">
+                {{#if item.system.icon}}<i class="{{item.system.icon}}" title="{{localize item.loc.name}}"></i>{{else}}<img src="{{item.img}}" title="{{localize item.loc.name}}" width="24" height="24"/>{{/if}}
+            </div>
+            <div class="item-summary clickable" data-item-id="{{item._id}}">
+                <h4 class="item-name">{{localize item.loc.name}}</h4>
+                <div class="item-description">
+                    <!-- Si Arme à Distance -->
+                    {{#if (or (eq item.system.typeArme 'thrown') (eq item.system.typeArme 'bow') (eq item.system.typeArme 'crossbow') (eq item.system.typeArme 'slug-gun') (eq item.system.typeArme 'energy-gun') (eq item.system.typeArme 'heavy'))}}
+                        ({{localize "ADAX-FS2.sheet.inventory.dmg"}}: {{item.system.dmg}}d6, {{localize "ADAX-FS2.sheet.inventory.range"}}: {{item.system.rngShort}}/{{item.system.rngLong}}, {{localize "ADAX-FS2.sheet.inventory.shots"}}: {{item.system.shots}})
+                    <!-- Si Arme de Mêlée -->
+                    {{else}}
+                        ({{localize "ADAX-FS2.sheet.inventory.dmg"}}: {{item.system.dmg}}d6, {{localize "ADAX-FS2.sheet.inventory.strReq"}}: {{item.system.str}})
+                    {{/if}}
+                </div>
+            </div>
+            <div class="item-controls">
+                <a class="item-control item-delete" title="{{localize 'ADAX-FS2.sheet.items.delete'}}"><i class="fas fa-trash"></i></a>
+            </div>
+        </li>
+        {{/each}}
+        {{#if (eq weapons.length 0)}}
+        <li class="item-drop-helper">
+            {{localize "ADAX-FS2.sheet.inventory.dropWeapon"}}
+        </li>
+        {{/if}}
+    </ul>
+
+    <!-- Sous-section Armures -->
+    <h3>{{localize "ADAX-FS2.compendium.equipment.armors.label"}}</h3>
+    <ul class="items-list-rich inventory-list">
+        {{#each armors as |item id|}}
+        <li class="item" data-item-id="{{item._id}}">
+            <div class="item-image">
+                {{#if item.system.icon}}<i class="{{item.system.icon}}" title="{{localize item.loc.name}}"></i>{{else}}<img src="{{item.img}}" title="{{localize item.loc.name}}" width="24" height="24"/>{{/if}}
+            </div>
+            <div class="item-summary clickable" data-item-id="{{item._id}}">
+                <h4 class="item-name">{{localize item.loc.name}}</h4>
+                <div class="item-description">
+                    ({{localize "ADAX-FS2.sheet.inventory.defense"}}: {{item.system.defense}}d6
+                    {{#if item.system.dex}}, {{localize "ADAX-FS2.sheet.inventory.dexPenaltyShort"}}: {{item.system.dex}}{{/if}}
+                    {{#if item.system.vigor}}, {{localize "ADAX-FS2.sheet.inventory.vigorPenaltyShort"}}: {{item.system.vigor}}{{/if}})
+                </div>
+            </div>
+            <div class="item-controls">
+                <a class="item-control item-delete" title="{{localize 'ADAX-FS2.sheet.items.delete'}}"><i class="fas fa-trash"></i></a>
+            </div>
+        </li>
+        {{/each}}
+        {{#if (eq armors.length 0)}}
+        <li class="item-drop-helper">
+            {{localize "ADAX-FS2.sheet.inventory.dropArmor"}}
+        </li>
+        {{/if}}
+    </ul>
   </section>
 </form>

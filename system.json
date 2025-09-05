@@ -30,8 +30,8 @@
   "styles": [
     "styles/adax-fading-suns-2ed.css"
   ],
- "packs": [
-      {
+  "packs": [
+    {
       "name": "competences-acquises",
       "label": "ADAX-FS2.compendium.skills.learned.label",
       "path": "packs/competences-acquises",
@@ -48,8 +48,20 @@
       "label": "ADAX-FS2.compendium.traits.beneficesAfflictions.label",
       "path": "packs/atouts-handicaps",
       "type": "Item"
+    },
+    {
+      "name": "armes",
+      "label": "ADAX-FS2.compendium.equipment.weapons.label",
+      "path": "packs/armes",
+      "type": "Item"
+    },
+    {
+      "name": "armures",
+      "label": "ADAX-FS2.compendium.equipment.armors.label",
+      "path": "packs/armures",
+      "type": "Item"
     }
-    ], 
+  ],
   "url": "",
   "manifest": "",
   "download": ""

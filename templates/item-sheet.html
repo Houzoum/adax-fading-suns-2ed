@@ -124,5 +124,113 @@
         <textarea name="system.description">{{system.description}}</textarea>
     </div>
 
+    <!-- Champs pour les ARMES -->
+    {{#if (eq item.type "arme")}}
+    <div class="grid grid-3col">
+        <div class="form-group">
+            <label>{{localize "ADAX-FS2.itemSheet.weaponTypes.label"}}</label>
+            <select name="system.typeArme">
+                {{selectOptions config.weaponTypes selected=system.typeArme}}
+            </select>
+        </div>
+        <div class="form-group">
+            <label>{{localize "ADAX-FS2.itemSheet.weaponSkills.label"}}</label>
+            <select name="system.competence">
+                {{selectOptions config.weaponSkills selected=system.competence}}
+            </select>
+        </div>
+        <div class="form-group">
+            <label>{{localize "ADAX-FS2.itemSheet.itemSizes.label"}}</label>
+            <select name="system.siz">
+                {{selectOptions config.itemSizes selected=system.siz}}
+            </select>
+        </div>
+    </div>
+    <div class="grid grid-3col">
+        <div class="form-group">
+            <label>{{localize "ADAX-FS2.itemSheet.damage.label"}} (d6)</label>
+            <input type="number" name="system.dmg" value="{{system.dmg}}"/>
+        </div>
+        <div class="form-group">
+            <label>{{localize "ADAX-FS2.itemSheet.init.label"}}</label>
+            <input type="number" name="system.init" value="{{system.init}}"/>
+        </div>
+        <div class="form-group">
+            <label>{{localize "ADAX-FS2.itemSheet.goal.label"}}</label>
+            <input type="number" name="system.goal" value="{{system.goal}}"/>
+        </div>
+    </div>
+    <div class="grid grid-3col">
+        <div class="form-group">
+            <label>{{localize "ADAX-FS2.itemSheet.rangeShort.label"}}</label>
+            <input type="number" name="system.rngShort" value="{{system.rngShort}}"/>
+        </div>
+        <div class="form-group">
+            <label>{{localize "ADAX-FS2.itemSheet.rangeLong.label"}}</label>
+            <input type="number" name="system.rngLong" value="{{system.rngLong}}"/>
+        </div>
+        <div class="form-group">
+            <label>{{localize "ADAX-FS2.itemSheet.strReq.label"}}</label>
+            <input type="number" name="system.str" value="{{system.str}}"/>
+        </div>
+    </div>
+    <div class="grid grid-3col">
+        <div class="form-group">
+            <label>{{localize "ADAX-FS2.itemSheet.rate.label"}}</label>
+            <input type="text" name="system.rate" value="{{system.rate}}"/>
+        </div>
+        <div class="form-group">
+            <label>{{localize "ADAX-FS2.itemSheet.shots.label"}}</label>
+            <input type="number" name="system.shots" value="{{system.shots}}"/>
+        </div>
+        <div class="form-group">
+            <label>{{localize "ADAX-FS2.itemSheet.cost"}} ({{localize "ADAX-FS2.currency"}})</label>
+            <input type="number" name="system.cost" value="{{system.cost}}"/>
+        </div>
+    </div>
+    <div class="form-group">
+        <label>{{localize "ADAX-FS2.itemSheet.notes.label"}}</label>
+        <textarea name="system.notes" rows="3">{{system.notes}}</textarea>
+    </div>
+    {{/if}}
+
+        <!-- Champs pour les ARMURES -->
+    {{#if (eq item.type "armure")}}
+    <div class="grid grid-3col">
+        <div class="form-group">
+            <label>{{localize "ADAX-FS2.itemSheet.armorTypes.label"}}</label>
+            <select name="system.typeArmure">
+                {{selectOptions config.armorTypes selected=system.typeArmure}}
+            </select>
+        </div>
+        <div class="form-group">
+            <label>{{localize "ADAX-FS2.itemSheet.defense.label"}} (d6)</label>
+            <input type="number" name="system.defense" value="{{system.defense}}"/>
+        </div>
+        <div class="form-group">
+            <label>{{localize "ADAX-FS2.itemSheet.strReq.label"}}</label>
+            <input type="number" name="system.str" value="{{system.str}}"/>
+        </div>
+    </div>
+    <div class="grid grid-3col">
+        <div class="form-group">
+            <label>{{localize "ADAX-FS2.itemSheet.dexPenalty.label"}}</label>
+            <input type="number" name="system.dex" value="{{system.dex}}"/>
+        </div>
+        <div class="form-group">
+            <label>{{localize "ADAX-FS2.itemSheet.vigorPenalty.label"}}</label>
+            <input type="number" name="system.vigor" value="{{system.vigor}}"/>
+        </div>
+        <div class="form-group">
+            <label>{{localize "ADAX-FS2.itemSheet.cost"}} ({{localize "ADAX-FS2.currency"}})</label>
+            <input type="number" name="system.cost" value="{{system.cost}}"/>
+        </div>
+    </div>
+    <div class="form-group">
+        <label>{{localize "ADAX-FS2.itemSheet.notes.label"}}</label>
+        <textarea name="system.notes">{{system.notes}}</textarea>
+    </div>
+    {{/if}}
+
   </section>
 </form>

@@ -1,7 +1,4 @@
 /* Style général pour la feuille de personnage de notre système */
-.fadingsuns.sheet.actor {
-    /* On pourra ajouter ici des styles généraux plus tard */
-}
 
 /* Règle pour la mise en évidence du trait primaire d'Esprit */
 .fadingsuns .primary-trait {
@@ -375,4 +372,55 @@
 
 .fadingsuns .item-summary .option-line strong {
     color: #440000;
+}
+/* --- Style pour les fiches d'équipement --- */
+
+.fadingsuns .grid {
+    display: grid;
+    gap: 10px;
+    align-items: center;
+}
+
+.fadingsuns .grid-3col {
+    grid-template-columns: repeat(3, 1fr);
+}
+
+.fadingsuns .item-sheet .form-group {
+    display: flex;
+    flex-direction: column;
+}
+
+.fadingsuns .item-sheet .form-group label {
+    font-weight: bold;
+    margin-bottom: 3px;
+}
+/* --- Style pour la section Inventaire --- */
+.fadingsuns .inventory-list {
+    display: flex;
+    flex-direction: column;
+}
+
+.fadingsuns .inventory-list .item,
+.fadingsuns .inventory-list .inventory-header {
+    display: grid;
+    grid-template-columns: 24px 2fr 1fr 1fr 1fr 1fr 30px; /* Colonnes : Icône, Nom, Stat1, Stat2, Stat3, Stat4, Contrôles */
+    gap: 10px;
+    align-items: center;
+    padding: 3px 0;
+    border-bottom: 1px solid #eee;
+}
+
+.fadingsuns .inventory-list .inventory-header {
+    font-weight: bold;
+    border-bottom: 1px solid #999;
+}
+
+.fadingsuns .inventory-list .item-name {
+    grid-column: 2; /* Le nom occupe la 2ème colonne */
+    font-weight: normal;
+}
+
+.fadingsuns .inventory-list .item-controls {
+    grid-column: 7; /* Les contrôles occupent la dernière colonne */
+    justify-self: end;
 }
